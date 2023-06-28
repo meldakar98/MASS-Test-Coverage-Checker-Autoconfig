@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="shortcut icon" type="image/x-icon"  href="assets/images/favicon.ico" />
+        <link rel="stylesheet" href="css/JSDragDropTree.css" type="text/css"></link>
+        <link rel="stylesheet" href="css/FileHierarchy.css" type="text/css"></link>
+        <link  href="css/style.css" media="screen" rel="stylesheet" type="text/css" />
+        <script src="js/style.js" defer></script>
+        <script type="text/javascript" src="js/FileHierarchy.js"></script><!-- IMPORTANT! INCLUDE THE FileHierarchy.js FILE BEFORE JSDragDropTree.js -->
+        <script type="text/javascript" src="js/JSDragDropTree.js"></script>
+        <script src="js/autoconfig.js" defer></script>
+        <title>MASS - Autoconfig | Test Coverage Checker</title>
+    </head>
+    <body>
+        <nav>
+            <div class="logo-name">
+                <div class="logo-image">
+                    <a href="https://qped.eu" target="_blank"> <img src="assets/images/logo_mass.png" class="App-logo" alt=""> </a>
+                </div>
+                <a href="https://qped-eu.github.io/mass/" target="_blank"> <span class="logo_name">MASS</span> </a>
+            </div>
+            <div class="menu-items">
+                <ul class="nav-links">
+                    <li><a href="index.html">
+                        <i class="uil uil-estate"></i>
+                        <span class="link-name">Home</span>
+                    </a></li>
+                    <li><a href="https://qped-eu.github.io/mass/#/configurator" target="_blank">
+                        <i class="uil uil-presentation-check"></i>
+                        <span class="link-name">All Checkers</span>
+                    </a></li>
+                    <li><a href="#">
+                        <i class="uil uil-book-open"></i>
+                        <span class="link-name">Documentation</span>
+                    </a></li>
+                    <li><a href="#">
+                        <i class="uil uil-shield"></i>
+                        <span class="link-name">Privacy Policy</span>
+                    </a></li>
+                </ul>
+                <ul class="logout-mode">
+                    <li>
+                        <a href="#">
+                        <i class="uil uil-setting"></i>
+                        <span class="link-name">Settings</span>
+                        </a>
+                    </li>
+            
+                    <li class="mode">
+                        <a href="#">
+                            <i class="uil uil-moon"></i>
+                            <span class="link-name">Dark Mode</span>
+                        </a>
+                        <div class="mode-toggle">
+                            <span class="switch"></span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        
+        <section class="dashboard">
+            <div class="top">
+                <i class="uil uil-bars sidebar-toggle"></i>
+                <div class="search-box">
+                    <h1>TEST COVERAGE CHECKER</h1>
+                    <h5>AUTOCONFIG</h5>
+                </div>
+                <img src="" alt="" />
+            </div>
+            <div class="dash-content">
+                <div class="overview">
+                    <div class="overview_form">
+                        <noscript>You need to enable JavaScript to run this app.</noscript>
+                        <div class="box">
+                            <div class="title table">
+                                <div class="table_cell tab_head_title">
+                                    <i class="uil uil-game-structure"></i>
+                                    <span class="text">PROJECT STRUCTUR</span>
+                                </div>
+                                <div class="table_cell tab_head_options">
+                                    <a title="Add a folder in project"> <i class="uil uil-folder-plus"></i> </a>
+                                    <a title="Upload a file in project root"> <i class="uil uil-file-upload"></i> </a>
+                                    <div class="none">
+                                        <input type="file" name="othersProjectFile1"  id="othersProjectFile1" class="othersProjectFile" class="none">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="boxContainer">
+                                <ul id="filehierarchy_tree2" class="filehierarchy_tree">
+                                    <li id="node0" noDrag="true" noSiblings="true" noDelete="true" noRename="true"><a href="#">World</a>
+                                        <ul>
+                                            <li id="node1"><a href="#">Europe</a>
+                                                <ul>
+                                                    <li id="node2" noDelete="true"><a href="#">Norway</a>
+                                                        <ul>
+                                                            <li id="node3" class="filehierarchy_endNode" noRename="true"><a href="#">Stavanger.java</a></li>
+                                                            <li id="node6" class="filehierarchy_endNode"><a href="#">Bergen.java</a></li>
+                                                        </ul>
+                                                    </li>
+                                                    <li id="node14"><a href="#">Germany</a>
+                                                        <ul>
+                                                            <li id="node141" class="filehierarchy_endNode"><a href="#">Berlin.java</a>	
+                                                            <li id="node142" class="filehierarchy_endNode"><a href="#">Munich.java</a>
+                                                        </ul>
+                                                    </li>
+                                                    <li id="node12" class="filehierarchy_endNode"><a href="#">Europe.xml</a></li>
+                                                </ul>
+                                            </li>
+                                            <li id="node16"><a href="#">Africa</a>
+                                                <ul>
+                                                    <li id="node17" class="filehierarchy_endNode"><a href="#">Tanzania.java</a></li>
+                                                    <li id="node18" class="filehierarchy_endNode"><a href="#">Kenya.java</a></li>
+                                                </ul>
+                                            </li>
+                                            <li id="node19" class="filehierarchy_endNode"><a href="#">Continent.xml</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <label for="projectFile">
+                                <div class="boxUpload none">
+                                    <input type="file" name="projectFile"  id="projectFile" class="none">
+                                    <i class="uil uil-upload"></i>
+                                    <p> <b>Drop a file or a zip-archive here</b> </p>
+                                    <p> Alternatively, you can select a file by</p>
+                                    <p> clicking here</p>
+                                </div>
+                            </label>
+                            <div class="boxInfos">
+                                <p class="allowed uil uil-check-circle none">
+                                    Upload succeed
+                                </p>
+                                <p class="error uil uil-minus-circle none">
+                                    Upload rejected
+                                </p>
+                            </div>
+                        </div>
+                        <div class="box">
+                            <div class="title table">
+                                <div class="table_cell tab_head_title">
+                                    <i class="uil uil-edit"></i>
+                                    <span class="text">AUTOCONFIGURATOR</span>
+                                </div>
+                            </div>
+                            <div class="boxInfos">
+                                <fieldset>
+                                    <legend>Level</legend>
+                                    <select class="floatLabel">
+                                        <option value="beginner" selected>BEGINNER</option>
+                                        <option value="advanced">ADVANCED</option>
+                                    </select>
+                                </fieldset>
+                                <fieldset>
+                                    <legend>Feedback Configuration</legend>
+                                    <div>
+                                        <input type="checkbox" id="test_failures" name="test_failures" checked />
+                                        <label for="test_failures">Show Test Failures</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="test_full_report" name="test_full_report" />
+                                        <label for="test_full_report">Show Full Coverage Report</label>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overview_result">
+                        <div class="box">
+                            <div class="title table">
+                                <div class="table_cell tab_head_title">
+                                    <span class="text">Generated Configuration</span>
+                                </div>
+                                <div class="table_cell tab_head_options">  
+                                    <i class="uil uil-copy" title="copy configuration"></i>
+                                    <i class="uil uil-refresh" title="reset configuration"></i>
+                                </div>
+                            </div>
+                            <textarea class="boxContainer" readonly>You need to enable JavaScript to run this app...</textarea>
+                            <div class="boxInfos">
+                                <fieldset>
+                                    <legend>Generated json file</legend>
+                                    <ul>
+                                        <li><em> Default Configuration</em></li>
+                                        <!-- <li><em> File weight: ... </em></li> -->
+                                    </ul>
+                                </fieldset>
+                                <div class="buttons">
+                                    <button id="downloadConfig"> download </button>
+                                    <button class="reset"> reset </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer>
+            <p>&copy; MASS</p>
+        </footer>
+
+        <script>
+            var treeObj = new JSDragDropTree();
+            treeObj.setTreeId('filehierarchy_tree2');
+            treeObj.setMaximumDepth(7);
+            treeObj.setMessageMaximumDepthReached('Maximum depth reached'); // If you want to show a message when maximum depth is reached, i.e. on drop.
+            treeObj.initTree();
+            treeObj.expandAll();
+        </script>
+    </body>
+</html>
