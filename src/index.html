@@ -9,8 +9,7 @@
         <link rel="stylesheet" href="css/FileHierarchy.css" type="text/css"></link>
         <link  href="css/style.css" media="screen" rel="stylesheet" type="text/css" />
         <script src="js/style.js" defer></script>
-        <script type="text/javascript" src="js/FileHierarchy.js"></script><!-- IMPORTANT! INCLUDE THE FileHierarchy.js FILE BEFORE JSDragDropTree.js -->
-        <script type="text/javascript" src="js/JSDragDropTree.js"></script>
+        <script type="module" src="js/JSDragDropTree.js"></script>
         <script src="js/autoconfig.js" defer></script>
         <title>MASS - Autoconfig | Test Coverage Checker</title>
     </head>
@@ -97,26 +96,26 @@
                                                 <ul>
                                                     <li id="node2" noDelete="true"><a href="#">Norway</a>
                                                         <ul>
-                                                            <li id="node3" class="filehierarchy_endNode" noRename="true"><a href="#">Stavanger.java</a></li>
-                                                            <li id="node6" class="filehierarchy_endNode"><a href="#">Bergen.java</a></li>
+                                                            <li id="node3" class="filehierarchy_endNode" noRename="true" noChildren="true"><a href="#">Stavanger.java</a></li>
+                                                            <li id="node6" class="filehierarchy_endNode" noChildren="true"><a href="#">Bergen.java</a></li>
                                                         </ul>
                                                     </li>
                                                     <li id="node14"><a href="#">Germany</a>
                                                         <ul>
-                                                            <li id="node141" class="filehierarchy_endNode"><a href="#">Berlin.java</a>	
-                                                            <li id="node142" class="filehierarchy_endNode"><a href="#">Munich.java</a>
+                                                            <li id="node141" class="filehierarchy_endNode" noChildren="true"><a href="#">Berlin.java</a>	
+                                                            <li id="node142" class="filehierarchy_endNode" noChildren="true"><a href="#">Munich.java</a>
                                                         </ul>
                                                     </li>
-                                                    <li id="node12" class="filehierarchy_endNode"><a href="#">Europe.xml</a></li>
+                                                    <li id="node12" class="filehierarchy_endNode" noChildren="true"><a href="#">Europe.xml</a></li>
                                                 </ul>
                                             </li>
                                             <li id="node16"><a href="#">Africa</a>
                                                 <ul>
-                                                    <li id="node17" class="filehierarchy_endNode"><a href="#">Tanzania.java</a></li>
-                                                    <li id="node18" class="filehierarchy_endNode"><a href="#">Kenya.java</a></li>
+                                                    <li id="node17" class="filehierarchy_endNode" noChildren="true"><a href="#">Tanzania.java</a></li>
+                                                    <li id="node18" class="filehierarchy_endNode" noChildren="true"><a href="#">Kenya.java</a></li>
                                                 </ul>
                                             </li>
-                                            <li id="node19" class="filehierarchy_endNode"><a href="#">Continent.xml</a></li>
+                                            <li id="node19" class="filehierarchy_endNode" noChildren="true"><a href="#">Continent.xml</a></li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -201,14 +200,5 @@
         <footer>
             <p>&copy; MASS</p>
         </footer>
-
-        <script>
-            var treeObj = new JSDragDropTree();
-            treeObj.setTreeId('filehierarchy_tree2');
-            treeObj.setMaximumDepth(7);
-            treeObj.setMessageMaximumDepthReached('Maximum depth reached'); // If you want to show a message when maximum depth is reached, i.e. on drop.
-            treeObj.initTree();
-            treeObj.expandAll();
-        </script>
     </body>
 </html>
