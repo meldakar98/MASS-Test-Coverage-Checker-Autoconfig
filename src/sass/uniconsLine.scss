@@ -71,6 +71,12 @@
 [class*=uil-].rotate-180:before{transform:rotate(180deg)}
 [class*=uil-].rotate-270:before{transform:rotate(270deg)}
 
+.uil {
+    cursor:pointer;
+}
+a .uil:hover, .tab_head_options .uil:hover {
+    background-color: rgba(0,0,0, .1);
+}
 
 .uil-angle-down:before{content:'\eb3a'}
 .uil-angle-right:before{content:'\eb6d'}
@@ -90,6 +96,7 @@
 .uil-edit-alt:before{content:'\e9a7'}
 .uil-estate:before{content:'\eca5'}
 .uil-file:before{content:'\e954'}
+.uil-file-edit:before { content: '\e943'; }
 .uil-file-upload:before{content:'\e930'}
 .uil-file-upload-alt:before{content:'\e92b'}
 .uil-files-landscapes:before{content:'\e925'}
