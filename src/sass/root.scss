@@ -223,16 +223,17 @@ noscript {
     width: auto;
     padding: 0 15px;
   }
+  .tab_head_title {
+    width: 100%;
+    text-align: left;
+  }
+  .tab_head_options {
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+  }
 }
-.tab_head_title {
-  width: 100%;
-  text-align: left;
-}
-.tab_head_options {
-  text-align: right;
-  display: flex;
-  justify-content: flex-end;
-}
+
 
 .highlight {
   border: 1px dashed var(--second-color);
