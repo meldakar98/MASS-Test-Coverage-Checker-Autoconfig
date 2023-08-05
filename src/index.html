@@ -5,12 +5,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="shortcut icon" type="image/x-icon"  href="assets/images/favicon.ico" />
-        <link rel="stylesheet" href="css/JSDragDropTree.css" type="text/css"></link>
-        <link rel="stylesheet" href="css/FileHierarchy.css" type="text/css"></link>
         <link  href="css/style.css" media="screen" rel="stylesheet" type="text/css" />
-        <script src="js/style.js" defer></script>
-        <script type="module" src="js/JSDragDropTree.js"></script>
-        <script src="js/autoconfig.js" defer></script>
+        <script type="module" src="js/main.js" defer></script>
         <title>MASS - Autoconfig | Test Coverage Checker</title>
     </head>
     <body>
@@ -88,7 +84,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="boxContainer">
+                            <div class="boxContainer none">
                                 <ul id="filehierarchy_tree2" class="filehierarchy_tree">
                                     <li id="node0" noDrag="true" noSiblings="true" noDelete="true" noRename="true"><a href="#">World</a>
                                         <ul>
@@ -121,12 +117,13 @@
                                 </ul>
                             </div>
                             <label for="projectFile">
-                                <div class="boxUpload none">
-                                    <input type="file" name="projectFile"  id="projectFile" class="none">
+                                <div class="boxUpload">
+                                    <input type="file" name="projectFile"  id="projectFile" class="none" multiple>
                                     <i class="uil uil-upload"></i>
                                     <p> <b>Drop a file or a zip-archive here</b> </p>
                                     <p> Alternatively, you can select a file by</p>
                                     <p> clicking here</p>
+                                    <ul id="file-list"></ul>
                                 </div>
                             </label>
                             <div class="boxInfos">
@@ -175,7 +172,7 @@
                                 </div>
                                 <div class="table_cell tab_head_options">  
                                     <i class="uil uil-copy" title="copy data to clipboard"></i>
-                                    <i class="uil uil-st" title="paste data from clipboard"></i>
+                                    <i class="uil uil-file-edit" title="paste data from clipboard"></i>
                                     <i class="uil uil-refresh" title="reset data"></i>
                                 </div>
                             </div>
