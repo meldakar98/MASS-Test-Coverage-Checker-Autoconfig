@@ -19,14 +19,14 @@ export default class CheckerCoverageFeedback{
     }
 
     public buildPartFeedbackBlock() : string{
-        //TODO check filename regex : a-z0-9._- (space) > 1 [THROW EXCEPTION AND NOTIFICATION ABOUT MISSING FILE]
         let lineRangeKeyValue = this.lineRanges == null ? '"lineRanges": "",\n' : '"lineRanges": "'+ this.lineRanges.printLineRange() + '",\n';
         let supKeyValue = this.suppresses.length == 0 ? "" : '"suppresses": "'+ this.suppresses.join() +'"\n';
+        let fName =  this.suppresses.length == 0 ? '"fileName": "'+ this.filename +'"\n' : '"fileName": "'+ this.filename +'",\n';
         return '{\n        ' +
                 lineRangeKeyValue+
                 '"message": "'+ this.messages + '",\n' +
                 '"showFor": "' + CoverageMiss[this.showFor] + '",\n' +
-                '"fileName": "'+ this.filename +'"\n' +
+                fName +
                 supKeyValue +
                 '}';
     }
