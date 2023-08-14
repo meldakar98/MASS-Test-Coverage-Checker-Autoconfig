@@ -2,8 +2,6 @@ export default class LineRanges {
     start: number;
     end: number | null = null;
 
-    constructor(start: number);
-
     constructor(start: number, end?:number){
         this.start = start;
         this.end = this.end ? this.end : null;
