@@ -130,7 +130,23 @@ export default class MASS_CheckerCoverage{
   }
 
 
-  
+  public updateResult_testFullReport(showFullCoverageReport: boolean){
+    let result: string = '"showFullCoverageReport": '+ showFullCoverageReport.toString();
+    let resultContainer = document.querySelector(".overview_result textarea.boxContainer") as HTMLTextAreaElement;
+    let oldResult = resultContainer.value;
+    let oldResultTestFullReport = oldResult.substring(oldResult.indexOf('"showFullCoverageReport"'));
+    oldResultTestFullReport = oldResultTestFullReport.substring(0, oldResultTestFullReport.indexOf('}'));
+    if(oldResultTestFullReport.indexOf(',')>=0){
+      oldResultTestFullReport = oldResultTestFullReport.substring(0, oldResultTestFullReport.indexOf(','));
+    }else{
+      if(oldResultTestFullReport.indexOf('true')>=0){
+        oldResultTestFullReport = oldResultTestFullReport.substring(0, oldResultTestFullReport.indexOf('true')+4);
+      } else {
+        oldResultTestFullReport = oldResultTestFullReport.substring(0, oldResultTestFullReport.indexOf('false')+5);
+      }
+    }
+    resultContainer.value = oldResult.replace(oldResultTestFullReport, result);
+  }
 
 
   public updateResult(isReplacingOld:boolean){
