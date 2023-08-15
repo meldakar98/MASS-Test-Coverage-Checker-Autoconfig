@@ -6,7 +6,7 @@ declare global {
 }
 
 window.JSTreeObj = '';
-class JSDragDropTree {
+export default class JSDragDropTree {
     private idOfTree: string | null;
     private dragNode_source: HTMLElement | null;
     private dragNode_parent: HTMLElement | null;
@@ -681,13 +681,3 @@ class JSDragDropTree {
         }
     }
 }
-
-window.addEventListener("DOMContentLoaded", (event) => {
-    //create the dom tree
-    var treeObj = new JSDragDropTree();
-    treeObj.setTreeId('filehierarchy_tree2');
-    treeObj.setMaximumDepth(7);
-    treeObj.setMessageMaximumDepthReached('Maximum depth reached');
-    treeObj.initTree();
-    treeObj.expandAll();
-});
