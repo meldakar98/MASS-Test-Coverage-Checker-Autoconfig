@@ -111,6 +111,25 @@ export default class MASS_CheckerCoverage{
     }
   }
 
+  public updateResult_testFailures(showTestFailures: boolean){
+    let result: string = '"showTestFailures": '+ showTestFailures.toString();
+    let resultContainer = document.querySelector(".overview_result textarea.boxContainer") as HTMLTextAreaElement;
+    let oldResult = resultContainer.value;
+    let oldResultTestFailures = oldResult.substring(oldResult.indexOf('"showTestFailures"'));
+    oldResultTestFailures = oldResultTestFailures.substring(0, oldResultTestFailures.indexOf('}'));
+    if(oldResultTestFailures.indexOf(',')>=0){
+      oldResultTestFailures = oldResultTestFailures.substring(0, oldResultTestFailures.indexOf(','));
+    }else{
+      if(oldResultTestFailures.indexOf('true')>=0){
+        oldResultTestFailures = oldResultTestFailures.substring(0, oldResultTestFailures.indexOf('true')+4);
+      } else {
+        oldResultTestFailures = oldResultTestFailures.substring(0, oldResultTestFailures.indexOf('false')+5);
+      }
+    }
+    resultContainer.value = oldResult.replace(oldResultTestFailures, result);
+  }
+
+
   
 
 
