@@ -33,9 +33,7 @@ export default class CheckerCoverageFeedback{
     }
 
     public buildPartFeedbackBlock_empty() : string{
-        return '{\n        ' +
-                '"showFor": "'+ CoverageMiss.PARTIALLY_MISSED.toString() +'",\n' +
-                '}';
+        return '{}';
     }
     
 }
