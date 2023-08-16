@@ -120,7 +120,7 @@ export default class Autoconfig {
             };
             reader.readAsArrayBuffer(file);
         } else {
-            alert('Please select a Zip file.');
+            new Notifier().notif('Please select a Zip file.');
         }
     }
 
@@ -173,11 +173,6 @@ export default class Autoconfig {
         treeObj.setMaximumDepth(7);
         treeObj.setMessageMaximumDepthReached('Maximum depth reached');
         treeObj.initTree();
-    }
-
-    // TODO Function to search comments > keywords inside comments > next instruction's line
-    public searchMassKeysRanges() {
-
     }
 
     //TODO Function to update or create file the whole structur
