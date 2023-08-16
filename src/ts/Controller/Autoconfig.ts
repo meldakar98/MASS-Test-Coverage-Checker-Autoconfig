@@ -4,6 +4,8 @@ import MASS_CheckerCoverage from "./MASS_CheckerCoverage.js";
 import MASSHandler from "./MASSHandler.js";
 import MASS_Syntax from "../Model/MASS_Syntax.js";
 import {Level} from "../Model/DataStructurs/Level.js";
+import {calculateTxtFileWeight} from "./Helper.js";
+import {getParsedDate} from "./Helper.js";
 
 interface AssociativeArray {
     [key: string]: string
@@ -37,7 +39,7 @@ export default class Autoconfig {
                 }
             })
             .catch((error) => {
-                console.error(`Could not copy text: ${error}`);
+                console.error(`Could not paste text from clipboard : ${error}`);
             });
     }
 
@@ -74,10 +76,10 @@ export default class Autoconfig {
         //build config
     }
 
-    public updateStatesFromSpecInput(specInput: HTMLInputElement, isToUnpack: boolean, isReplacingOld:boolean) {
+    public async updateStatesFromSpecInput(specInput: HTMLInputElement, isToUnpack: boolean, isReplacingOld:boolean) {
         var autoconfig = new Autoconfig();
         autoconfig.updateFileStructurFromSpecInput(specInput, isToUnpack);
-        autoconfig.buildConfig(specInput.files, isToUnpack), isReplacingOld;
+        await autoconfig.buildConfig(specInput.files, isToUnpack), isReplacingOld;
     }
 
     // TODO Function to unzip archive
@@ -261,11 +263,11 @@ export default class Autoconfig {
     }
 
     // TODO Function to generate the configuration
-    public buildConfig(files: FileList, isToUnpack: boolean = false, isReplacingOld:boolean=true) {
+    public async buildConfig(files: FileList, isToUnpack: boolean = false, isReplacingOld:boolean=true) {
         //1- Build Feedbacks Block (always from all input fields)
         //2- Also show syntactic errors in keywords parameters
         //3- Build file structure > correct files parents
-        new MASS_CheckerCoverage().buildConfigFromJavaFile(files, isReplacingOld);
+        await new MASS_CheckerCoverage().buildConfigFromJavaFile(files, isReplacingOld);
     }
 
     // TODO function which build config from all uploaded files
@@ -274,7 +276,7 @@ export default class Autoconfig {
     }
 
     //Function of the first step to build the configuration after an upload
-    public startFirstStepUpload(currentInputFile: HTMLInputElement, isReplacingOld:boolean) {
+    public async startFirstStepUpload(currentInputFile: HTMLInputElement, isReplacingOld:boolean) {
         var autoconfig = new Autoconfig();
         const files: FileList = currentInputFile.files;
 
@@ -296,7 +298,7 @@ export default class Autoconfig {
             });
             return;
         }
-        autoconfig.updateStatesFromSpecInput(currentInputFile, false, isReplacingOld);
+        await autoconfig.updateStatesFromSpecInput(currentInputFile, false, isReplacingOld);
 
     }
 
@@ -346,11 +348,24 @@ export default class Autoconfig {
 
 
     //-[APP]------------------------------------------------------------
+    public updateResultWeight(){
+        const textareaResult = document.querySelector("textarea.boxContainer") as HTMLTextAreaElement;
+        const resultWeightHtml = document.getElementById("resultWeight") as HTMLUListElement;
+        if(textareaResult.value == new MASSHandler().getDefault_massFullConfig()){
+            resultWeightHtml.innerHTML = "<li> <em> Default Configuration </em> </li>";
+        } else {
+            resultWeightHtml.innerHTML = 
+                "<li><em> Updated at: " + getParsedDate() + " </em></li>"+ 
+                "<li><em> File weight: " + calculateTxtFileWeight(textareaResult.value, 2) + " Ko </em></li>";
+        }
+    }
+
     public resetApp() {
         var autoconfig = new Autoconfig();
         autoconfig.resetProjectStructur();
         autoconfig.resetAutoConfigurator();
         autoconfig.initConfigResult();
+        autoconfig.updateResultWeight();
         new Notifier().notif("The Configurator have been reseted");
     }
 
@@ -376,22 +391,38 @@ export default class Autoconfig {
 
             //onchange principal input file
             const inputFile0 = document.getElementById("projectFile") as HTMLInputElement;
-            inputFile0.addEventListener("change", () => this.startFirstStepUpload(inputFile0, true));
+            inputFile0.addEventListener("change", () => {
+                this.startFirstStepUpload(inputFile0, true).then(
+                    () => this.updateResultWeight()
+                );
+            });
 
             //onchange "Level"
             const selectLevel = document.getElementById("syntaxLevel") as HTMLInputElement;
             selectLevel.addEventListener("change", () => {
                 let syntaxLevel: Level = selectLevel.value == "ADVANCED" ? Level.ADVANCED : Level.BEGINNER;
-                 new MASS_Syntax(syntaxLevel).updateResult()} 
-            );
+                 new MASS_Syntax(syntaxLevel).updateResult();
+                 this.updateResultWeight();
+            });
 
             //onchange "Show Test Failures"
             const selectTestFailures = document.getElementById("test_failures") as HTMLInputElement;
-            selectTestFailures.addEventListener("change", () => new MASS_CheckerCoverage().updateResult_testFailures(selectTestFailures.checked));
+            selectTestFailures.addEventListener("change", () => {
+                new MASS_CheckerCoverage().updateResult_testFailures(selectTestFailures.checked);
+                this.updateResultWeight();
+            });
 
             //onchange "Show Full Coverage Report"
             const selectFullCovReport = document.getElementById("test_full_report") as HTMLInputElement;
-            selectFullCovReport.addEventListener("change", () => new MASS_CheckerCoverage().updateResult_testFullReport(selectFullCovReport.checked));
+            selectFullCovReport.addEventListener("change", () => {
+                new MASS_CheckerCoverage().updateResult_testFullReport(selectFullCovReport.checked);
+                this.updateResultWeight();
+            });
+
+            //TODO: onpaste config: change all.
+            //v1. The user should first change the config, then upload files or edit config && the pasted text is not controlled yet
+            //v2. text is controlled and checkers objects and verified are created hanging on the pasted text && the text can everytime be added
+            
 
         });
     }
