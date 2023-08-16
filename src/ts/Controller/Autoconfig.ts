@@ -44,6 +44,30 @@ export default class Autoconfig {
     }
 
 
+    public addResultFromClipboard(){
+        const resultContainer: HTMLTextAreaElement = document.querySelector(".overview_result textarea.boxContainer") as HTMLTextAreaElement;
+        navigator.clipboard.readText()
+            .then((text) => {
+                const CONFIG_OBJECT_NAME = "qf.mass";
+                let parsedConfig = text.substring(text.indexOf(CONFIG_OBJECT_NAME) + CONFIG_OBJECT_NAME.length); 
+                parsedConfig = parsedConfig.substring(parsedConfig.indexOf("=")+1);
+                parsedConfig = parsedConfig.trim();
+                if (parsedConfig == this.DEFAULT_RESULT) {
+                    new Notifier().notif("The pasted configuration is the default configuration");
+                } else {
+                    resultContainer.value = parsedConfig;
+                    //TODO fetch filled inpuit files and update the config
+                    this.updateResultWeight();
+                    new Notifier().notif("The generated Configuration was copied to clipboard.");
+                }
+            })
+            .catch((error) => {
+                console.error(`Could not copy text: ${error}`);
+            });
+
+    }
+
+
     //-[AUTOCONFIGURATOR]------------------------------------------------------------
     public resetAutoConfigurator() {
         //reset values of fields of type input file
@@ -388,6 +412,9 @@ export default class Autoconfig {
 
             //Copy the result when the button is clicked: Save the result to the clipboard
             document.querySelector(".overview_result .tab_head_options .uil-copy").addEventListener('click', this.saveResultToClipboard);
+
+            //Copy the result when the button is clicked: Save the result to the clipboard
+            document.querySelector(".overview_result .tab_head_options .uil-file-edit").addEventListener('click', this.addResultFromClipboard);
 
             //onchange principal input file
             const inputFile0 = document.getElementById("projectFile") as HTMLInputElement;
