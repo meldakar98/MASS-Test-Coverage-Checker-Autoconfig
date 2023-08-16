@@ -103,7 +103,7 @@ export default class Autoconfig {
     public async updateStatesFromSpecInput(specInput: HTMLInputElement, isToUnpack: boolean, isReplacingOld:boolean) {
         var autoconfig = new Autoconfig();
         autoconfig.updateFileStructurFromSpecInput(specInput, isToUnpack);
-        await autoconfig.buildConfig(specInput.files, isToUnpack), isReplacingOld;
+        await autoconfig.buildConfig(specInput.files, isToUnpack, isReplacingOld);
     }
 
     // TODO Function to unzip archive
@@ -129,21 +129,20 @@ export default class Autoconfig {
         //TODO: case:foundFolder>foundFolder>newFolder>File 
         //alert(JSON.stringify(folder));
         folder.forEach((relativePath, file) => {
+            if(relativePath.includes("/.")) {
+                return;
+            }
             let trueParent = parentElement;
             //TODO create directories and append files | ignore folders when directory already created
-            let folderPrepared = relativePath.substring(0, relativePath.length - 1) as string;
+            let folderPrepared = relativePath.endsWith("/") ? relativePath.substring(0, relativePath.length - 1) as string : relativePath;
             let lastIndexSlash = folderPrepared.lastIndexOf("/");
             let folderName = lastIndexSlash > -1 ? folderPrepared.substring(lastIndexSlash + 1) : folderPrepared as string;
             let folderParent = lastIndexSlash > -1 ? folderPrepared.substring(0, lastIndexSlash + 1) : "" as string;
-            //alert("parent:"+folderParent+ " | son:"+folderName); 
             if (folderParent != "" && this.subfolder[folderParent] !== undefined) {
-               trueParent = document.getElementById(this.subfolder[folderParent]);
-                if(!(trueParent.innerHTML.includes("ul"))){
-                    let subFolderAppending = document.createElement("ul");
-                    trueParent.appendChild(subFolderAppending);
-                    trueParent = trueParent.getElementsByTagName("ul")[0];
-                }
-            } else if (folderParent != "") {
+                trueParent = document.getElementById(this.subfolder[folderParent]).getElementsByTagName("ul")[0];
+            }
+            /* 
+            else if (folderParent != "" && file.dir) {
                 //create directories > and save object, then append on filestructur
                 let directoryConcat = folderParent;
                 let highestSlash = folderParent.lastIndexOf("/");
@@ -157,59 +156,27 @@ export default class Autoconfig {
                     folderElement.appendChild(listItemAnchor);
                     this.subfolder[highestParent] = folderId;
                     parentElement.appendChild(folderElement);
-                }else{
-                    while(highestSlash > -1){
-                        highestParent = directoryConcat.substring(0, highestSlash+1);
-                        if(this.subfolder[highestParent] === undefined){
-                            const folderElement = document.createElement('li');
-                            let folderId = "node" + Date.now().toString();
-                            folderElement.id = folderId;
-                            let listItemAnchor = document.createElement("a");
-                            listItemAnchor.innerText = folderName;
-                            folderElement.appendChild(listItemAnchor);
-                            this.subfolder[highestParent] = folderId;
-                            if((document.getElementById(this.subfolder[highestParent]).innerHTML).includes("ul")){
-                                document.getElementById(this.subfolder[highestParent]).appendChild(folderElement);
-                            }else{
-                                let subFolderAppending = document.createElement("ul");
-                                document.getElementById(this.subfolder[highestParent]).appendChild(subFolderAppending);
-                                ((document.getElementById(this.subfolder[highestParent])).getElementsByTagName("ul")[0]).appendChild(folderElement);
-                            }      
-                            this.subfolder[highestParent] = folderId;
-                        }
-                        directoryConcat = directoryConcat.substring(highestSlash+1);
-                        highestSlash = directoryConcat.lastIndexOf("/");
-                    }
                 }
             }
-            //alert("1");
+            */
+           //fetch folder parent
+           //save folder parent in array of folder parents
+           //append each new file and folder in foud folder parent
             if (file.dir) { //folder
                 const folderElement = document.createElement('li');
-                let folderId = "node" + Date.now().toString();
+                let folderId = "node" + Date.now().toString() + "_" + Math.round(Math.random() * 100);
                 folderElement.id = folderId;
                 let listItemAnchor = document.createElement("a");
                 listItemAnchor.innerText = folderName;
                 folderElement.appendChild(listItemAnchor);
-                //save path and node id
-                if (folderParent != "" && this.subfolder[folderParent] !== undefined) {
-                    if (!((trueParent.innerHTML).includes("ul"))) {
-                        let subFolderElement = document.createElement('ul');
-                        folderElement.appendChild(subFolderElement);
-                    }
-                } else if (folderParent != "") {
-                    this.subfolder[folderParent] = folderId;
-                } else  if (folderParent == ""){
-                    this.subfolder[folderName+"/"] = folderId;
-                }
+                let subFolderElement = document.createElement('ul');
+                folderElement.appendChild(subFolderElement);
+                this.subfolder[file.name] = folderId;
                 //if element start with existing path, append element in existing path
                 //const subFolder = folder.folder(relativePath);
-                //const subFolderElement = document.createElement('ul');
-                //folderElement.appendChild(subFolderElement);
                 trueParent.appendChild(folderElement);
-                //alert("2");
                 //this.displayFolderStructure(subFolder, subFolderElement);
             } else { //file
-                //alert("3");
                 const fileElement = document.createElement('li');
                 //fileElement.textContent = relativePath;
                 const fileElementAnchor = document.createElement("a");
@@ -223,7 +190,6 @@ export default class Autoconfig {
                 fileElementAnchor.innerText = relativePath.substring(relativePath.lastIndexOf("/") + 1);
                 fileElement.appendChild(fileElementAnchor);
                 trueParent.appendChild(fileElement);
-                //alert("4");
             }
         });
         var treeObj = new JSDragDropTree();
