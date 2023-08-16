@@ -62,7 +62,7 @@ export default class MASS_CheckerCoverage{
                     if (line.includes(keyWordStartCov) || line.includes(keyWordEndCov)) {
                       // Add the found strings to the array
                       if (line.includes(keyWordStartCov)) {
-                        let feedbackPart: any[] = this.extractFeedbackPart(lines, line, lineNumber, lineNumber);
+                        let feedbackPart: any[] = this.extractFeedbackPart(lines, line, "//", lineNumber, lineNumber);
                         // build object for config (check strings formats)
                         this.feedback[feedbackPart[0] as string] = new CheckerCoverageFeedback(
                             feedbackPart[0],
@@ -100,6 +100,58 @@ export default class MASS_CheckerCoverage{
                     }
                   } else if (line.includes('/*')) {
                     //TODO handle muti-lines
+                    //find start and end of comment
+                    let endCommentLineNumber:number = lineNumber;
+                    let comment: string = "";
+                    for(let lookingLineNber = lineNumber; lines.length; lookingLineNber++){
+                      comment += lines[lookingLineNber];
+                      if(lines[lookingLineNber].includes('*/')){
+                        endCommentLineNumber = lookingLineNber;
+                        break;
+                      }
+                    }
+                    comment = comment.substring(comment.indexOf('/*'), comment.lastIndexOf('*/')+2);
+                    // Check if the line contains the search strings
+                    if (comment.includes(keyWordStartCov) || comment.includes(keyWordEndCov)) {
+                       // Add the found strings to the array
+                       if (comment.includes(keyWordStartCov)) {
+                        let feedbackPart: any[] = this.extractFeedbackPart(lines, comment, "/*", lineNumber, endCommentLineNumber);
+                        // build object for config (check strings formats)
+                        this.feedback[feedbackPart[0] as string] = new CheckerCoverageFeedback(
+                            feedbackPart[0],
+                            file.name,
+                            feedbackPart[2],
+                            new LineRanges(feedbackPart[4]),
+                            feedbackPart[1],
+                            feedbackPart[3]
+                        );
+                      }
+                    }
+                    if (comment.includes(keyWordEndCov)) {
+                      //fetch id
+                      let startParams = comment.substring(comment.indexOf(keyWordEndCov));
+                      startParams = startParams.substring(startParams.indexOf('"')+1);
+                      let msgId = startParams.substring(0, startParams.lastIndexOf(')')-1);
+                      while(msgId.lastIndexOf(')') >= 0){
+                        if(msgId.lastIndexOf(')') != msgId.lastIndexOf('\)')+1){
+                          msgId = msgId.substring(0, msgId.lastIndexOf(')')-1);
+                          msgId = msgId.substring(0, msgId.lastIndexOf('"')-1);
+                        } else
+                          break;
+                      }
+                      // Find the previous non-empty Java instruction line
+                      let previousInstructionLine = line.trim().startsWith('/*') ? lineNumber : lineNumber+1;
+                      while(previousInstructionLine!=lineNumber && previousInstructionLine > 0){
+                        if(lines[previousInstructionLine].trim() != '')
+                          break;
+                          previousInstructionLine--;
+                      }
+                      //update CheckerCoverageFeedbacks[msgId]
+                      if(this.feedback.hasOwnProperty(msgId)){
+                        this.feedback[msgId].lineRanges.setEnd(previousInstructionLine);
+                      }
+                    }
+
                   }
                 }
                 this.updateResult(isReplacingOld);
@@ -180,7 +232,7 @@ export default class MASS_CheckerCoverage{
   }
 
 
-  private extractFeedbackPart(lines, line, kwFirstCharLineNumber, kwLastCharLineNumber): any[]{
+  private extractFeedbackPart(lines, line, commentStartString, kwFirstCharLineNumber, kwLastCharLineNumber): any[]{
     const keyWordStartCov: string = '@mass_cvStart(';
     //fetch parameters
     let startParams = line.substring(line.indexOf(keyWordStartCov));
@@ -202,15 +254,15 @@ export default class MASS_CheckerCoverage{
     }
     arrayParams.push(paramsConcat);
     //TODO if array bigger than 4 elements, save errors. else
-    //id 
+    //id : arrayParams[0]
     arrayParams[0] = arrayParams[0].replaceAll(/\s/g,'');
     //message : arrayParams[1];
-    //coverageMiss
+    //coverageMiss : arrayParams[2] 
     arrayParams[2] = arrayParams[2].replaceAll(/\s/g,'') == CoverageMiss.FULLY_MISSED.toString() ? CoverageMiss.FULLY_MISSED : CoverageMiss.PARTIALLY_MISSED;
-    //supMessages
+    //supMessages : arrayParams[3]
     arrayParams[3]= arrayParams[3].replaceAll(/\s/g,'').split(','); 
     // Find the next non-empty Java instruction line
-    let nextInstructionLine : number = line.trim().startsWith('//') ? kwLastCharLineNumber+2 : kwLastCharLineNumber+1;
+    let nextInstructionLine : number = line.trim().startsWith(commentStartString) ? kwLastCharLineNumber+2 : kwLastCharLineNumber+1;
     while(nextInstructionLine!=kwLastCharLineNumber && nextInstructionLine < lines.length){
         if(lines[nextInstructionLine].trim() != '')
           break;
