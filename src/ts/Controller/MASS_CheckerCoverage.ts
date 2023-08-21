@@ -40,124 +40,159 @@ export default class MASS_CheckerCoverage {
     return buildedFeedback;
   }
 
-  //1- Build array of syntactic errors & build array of feedback block
-  //2- Parse coverage value of config and replace completely with new results
-  public async buildConfigFromJavaFile(files, isReplacingOld: boolean) {
+
+  private buildConfigFromJavaFile(file, fileContent, isReplacingOld: boolean) {
     const keyWordStartCov: string = '@mass_cvStart(';
     const keyWordEndCov: string = '@mass_cvEnd(';
-    try {
-      // Iterate through each file
-      for (const file of files) {
-        if (file.type == "text/x-java-source" || file.name.endsWith(".java")) {
-          await readFile(file)
-            .then((fileContent) => {
-              // Split the file content into lines
-              const lines = fileContent.split('\n');
-              // Iterate through each line
-              for (let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
-                const line = lines[lineNumber];
-                // Check if the line is a comment ALSO handle comment at the end of the line
-                if (line.includes('//')) {
-                  // Check if the line contains the search strings
-                  if (line.includes(keyWordStartCov)) {
-                    let feedbackPart: any[] = this.extractFeedbackPart(lines, line, "//", lineNumber, lineNumber);
-                    // build object for config (check strings formats)
-                    this.feedback[feedbackPart[0] as string] = new CheckerCoverageFeedback(
-                      feedbackPart[0],
-                      file.name,
-                      feedbackPart[2],
-                      new LineRanges(feedbackPart[4]),
-                      feedbackPart[1],
-                      feedbackPart[3]
-                    );
-                  }
-                  if (line.includes(keyWordEndCov)) {
-                    //fetch id
-                    let startParams = line.substring(line.indexOf(keyWordEndCov));
-                    startParams = startParams.substring(startParams.indexOf('"') + 1);
-                    let msgId = startParams.substring(0, startParams.lastIndexOf(')') - 1);
-                    while (msgId.lastIndexOf(')') >= 0) {
-                      if (msgId.lastIndexOf(')') != msgId.lastIndexOf('\)') + 1) {
-                        msgId = msgId.substring(0, msgId.lastIndexOf(')') - 1);
-                        msgId = msgId.substring(0, msgId.lastIndexOf('"') - 1);
-                      } else
-                        break;
-                    }
-                    // Find the previous non-empty Java instruction line
-                    let previousInstructionLine = line.trim().startsWith('//') ? lineNumber : lineNumber + 1;
-                    while (previousInstructionLine != lineNumber && previousInstructionLine > 0) {
-                      if (lines[previousInstructionLine].trim() != '')
-                        break;
-                      previousInstructionLine--;
-                    }
-                    //update CheckerCoverageFeedbacks[msgId]
-                    if (this.feedback.hasOwnProperty(msgId)) {
-                      this.feedback[msgId].lineRanges.setEnd(previousInstructionLine);
-                    }
-                  }
-                } else if (line.includes('/*')) {
-                  //TODO handle muti-lines
-                  //find start and end of comment
-                  let endCommentLineNumber: number = lineNumber;
-                  let comment: string = "";
-                  for (let lookingLineNber = lineNumber; lines.length; lookingLineNber++) {
-                    comment += lines[lookingLineNber];
-                    if (lines[lookingLineNber].includes('*/')) {
-                      endCommentLineNumber = lookingLineNber;
-                      break;
-                    }
-                  }
-                  comment = comment.substring(comment.indexOf('/*'), comment.lastIndexOf('*/') + 2);
-                  // Check if the line contains the search strings
-                  if (comment.includes(keyWordStartCov)) {
-                    // Add the found strings to the array
-                    if (comment.includes(keyWordStartCov)) {
-                      let feedbackPart: any[] = this.extractFeedbackPart(lines, comment, "/*", lineNumber, endCommentLineNumber);
-                      // build object for config (check strings formats)
-                      this.feedback[feedbackPart[0] as string] = new CheckerCoverageFeedback(
-                        feedbackPart[0],
-                        file.name,
-                        feedbackPart[2],
-                        new LineRanges(feedbackPart[4]),
-                        feedbackPart[1],
-                        feedbackPart[3]
-                      );
-                    }
-                  }
-                  if (comment.includes(keyWordEndCov)) {
-                    //fetch id
-                    let startParams = comment.substring(comment.indexOf(keyWordEndCov));
-                    startParams = startParams.substring(startParams.indexOf('"') + 1);
-                    let msgId = startParams.substring(0, startParams.lastIndexOf(')') - 1);
-                    while (msgId.lastIndexOf(')') >= 0) {
-                      if (msgId.lastIndexOf(')') != msgId.lastIndexOf('\)') + 1) {
-                        msgId = msgId.substring(0, msgId.lastIndexOf(')') - 1);
-                        msgId = msgId.substring(0, msgId.lastIndexOf('"') - 1);
-                      } else
-                        break;
-                    }
-                    // Find the previous non-empty Java instruction line
-                    let previousInstructionLine = line.trim().startsWith('/*') ? lineNumber : lineNumber + 1;
-                    while (previousInstructionLine != lineNumber && previousInstructionLine > 0) {
-                      if (lines[previousInstructionLine].trim() != '')
-                        break;
-                      previousInstructionLine--;
-                    }
-                    //update CheckerCoverageFeedbacks[msgId]
-                    if (this.feedback.hasOwnProperty(msgId)) {
-                      this.feedback[msgId].lineRanges.setEnd(previousInstructionLine);
-                    }
-                  }
-                }
-              }
-              this.updateResult(isReplacingOld);
-            });
+      // Split the file content into lines
+      const lines = fileContent.split('\n');
+      // Iterate through each line
+      for (let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
+        const line = lines[lineNumber];
+        // Check if the line is a comment ALSO handle comment at the end of the line
+        if (line.includes('//')) {
+          // Check if the line contains the search strings
+          if (line.includes(keyWordStartCov)) {
+            let feedbackPart: any[] = this.extractFeedbackPart(lines, line, "//", lineNumber, lineNumber);
+            // build object for config (check strings formats)
+            this.feedback[feedbackPart[0] as string] = new CheckerCoverageFeedback(
+              feedbackPart[0],
+              file.name,
+              feedbackPart[2],
+              new LineRanges(feedbackPart[4]),
+              feedbackPart[1],
+              feedbackPart[3]
+            );
+          }
+          if (line.includes(keyWordEndCov)) {
+            //fetch id
+            let startParams = line.substring(line.indexOf(keyWordEndCov));
+            startParams = startParams.substring(startParams.indexOf('"') + 1);
+            let msgId = startParams.substring(0, startParams.lastIndexOf(')') - 1);
+            while (msgId.lastIndexOf(')') >= 0) {
+              if (msgId.lastIndexOf(')') != msgId.lastIndexOf('\)') + 1) {
+                msgId = msgId.substring(0, msgId.lastIndexOf(')') - 1);
+                msgId = msgId.substring(0, msgId.lastIndexOf('"') - 1);
+              } else
+                break;
+            }
+            // Find the previous non-empty Java instruction line
+            let previousInstructionLine = line.trim().startsWith('//') ? lineNumber : lineNumber + 1;
+            while (previousInstructionLine != lineNumber && previousInstructionLine > 0) {
+              if (lines[previousInstructionLine].trim() != '')
+                break;
+              previousInstructionLine--;
+            }
+            //update CheckerCoverageFeedbacks[msgId]
+            if (this.feedback.hasOwnProperty(msgId)) {
+              this.feedback[msgId].lineRanges.setEnd(previousInstructionLine);
+            }
+          }
+        } else if (line.includes('/*')) {
+          //TODO handle muti-lines
+          //find start and end of comment
+          let endCommentLineNumber: number = lineNumber;
+          let comment: string = "";
+          for (let lookingLineNber = lineNumber; lines.length; lookingLineNber++) {
+            comment += lines[lookingLineNber];
+            if (lines[lookingLineNber].includes('*/')) {
+              endCommentLineNumber = lookingLineNber;
+              break;
+            }
+          }
+          comment = comment.substring(comment.indexOf('/*'), comment.lastIndexOf('*/') + 2);
+          // Check if the line contains the search strings
+          if (comment.includes(keyWordStartCov)) {
+            // Add the found strings to the array
+            if (comment.includes(keyWordStartCov)) {
+              let feedbackPart: any[] = this.extractFeedbackPart(lines, comment, "/*", lineNumber, endCommentLineNumber);
+              // build object for config (check strings formats)
+              this.feedback[feedbackPart[0] as string] = new CheckerCoverageFeedback(
+                feedbackPart[0],
+                file.name,
+                feedbackPart[2],
+                new LineRanges(feedbackPart[4]),
+                feedbackPart[1],
+                feedbackPart[3]
+              );
+            }
+          }
+          if (comment.includes(keyWordEndCov)) {
+            //fetch id
+            let startParams = comment.substring(comment.indexOf(keyWordEndCov));
+            startParams = startParams.substring(startParams.indexOf('"') + 1);
+            let msgId = startParams.substring(0, startParams.lastIndexOf(')') - 1);
+            while (msgId.lastIndexOf(')') >= 0) {
+              if (msgId.lastIndexOf(')') != msgId.lastIndexOf('\)') + 1) {
+                msgId = msgId.substring(0, msgId.lastIndexOf(')') - 1);
+                msgId = msgId.substring(0, msgId.lastIndexOf('"') - 1);
+              } else
+                break;
+            }
+            // Find the previous non-empty Java instruction line
+            let previousInstructionLine = line.trim().startsWith('/*') ? lineNumber : lineNumber + 1;
+            while (previousInstructionLine != lineNumber && previousInstructionLine > 0) {
+              if (lines[previousInstructionLine].trim() != '')
+                break;
+              previousInstructionLine--;
+            }
+            //update CheckerCoverageFeedbacks[msgId]
+            if (this.feedback.hasOwnProperty(msgId)) {
+              this.feedback[msgId].lineRanges.setEnd(previousInstructionLine);
+            }
+          }
         }
       }
-    } catch (error) {
-      console.error('Error:', error);
+      this.updateResult(isReplacingOld);
+  }
+
+  //1- Build array of syntactic errors & build array of feedback block
+  //2- Parse coverage value of config and replace completely with new results
+  public async buildConfigFromJavaFiles(files, isToUnpack:boolean, isReplacingOld: boolean) {
+    var cc : MASS_CheckerCoverage = new MASS_CheckerCoverage();
+    var isStillReplacingOld = isReplacingOld;
+    var relativePaths = [];
+    var currentFiles = [];
+    var fileIndex = 0;
+    if(isToUnpack){
+      try {
+        // Iterate through each file
+        files.forEach((relativePath, currentFile) => {
+          relativePaths[fileIndex] = relativePath;
+          currentFiles[fileIndex] = currentFile;
+          fileIndex++;
+        });
+        for(let i=0; i<fileIndex; i++){
+          if(relativePaths[i].includes("/.") || currentFiles[i].dir) {
+            i=i+1;
+          }
+          if(i<fileIndex && currentFiles[i].name.endsWith(".java")) {
+            let fileContent = await files.file(currentFiles[i].name).async("string");
+            cc.buildConfigFromJavaFile(currentFiles[i], fileContent, isStillReplacingOld);
+            isStillReplacingOld = true;
+          }
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    } else {
+      try {
+        // Iterate through each file
+        for (const file of files) {
+          if (file.type == "text/x-java-source" || file.name.endsWith(".java")) {
+            await readFile(file)
+              .then( (fileContent) => {
+                this.buildConfigFromJavaFile(file, fileContent, isStillReplacingOld);
+                isStillReplacingOld = true;
+              });
+          }
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
     }
   }
+
 
   public updateResult_testFailures(showTestFailures: boolean) {
     let result: string = '"showTestFailures": ' + showTestFailures.toString();
@@ -222,8 +257,8 @@ export default class MASS_CheckerCoverage {
       resultContainer.value = oldResult.substring(0, oldResult.indexOf(oldResultCoverage)) + this.getStringCoverageConfig() + "\n  " + oldResult.substring(oldResult.indexOf(oldResultCoverage) + oldResultCoverage.length);
     } else {
       // fetch complet result and append coverage result at the end of current coverage
-      oldResultCoverage = oldResultCoverage.substring(0, oldResultCoverage.lastIndexOf('"}"'));
-      resultContainer.value = oldResult.substring(0, oldResult.indexOf(oldResultCoverage)) + ",\n    " + this.getStringFeedbackConfig() + oldResult.substring(oldResult.indexOf(oldResultCoverage) + oldResultCoverage.length);
+      oldResultCoverage = oldResultCoverage.substring(0, oldResultCoverage.lastIndexOf('}'));
+      resultContainer.value = oldResult.substring(0, oldResult.indexOf(oldResultCoverage) + oldResultCoverage.length) + ",\n    " + this.getStringFeedbackConfig() + oldResult.substring(oldResult.indexOf(oldResultCoverage) + oldResultCoverage.length);
     }
   }
 
