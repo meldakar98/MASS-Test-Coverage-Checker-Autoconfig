@@ -333,6 +333,13 @@ export default class Autoconfig {
     }
 
 
+    public refreshAppp(){
+        var autoconfig = new Autoconfig();
+        autoconfig.updateAllFileStructur();
+        autoconfig.buildConfigWholeConfig();
+        new Notifier().notif("The results are now up to date");
+    }
+
     //-[DOM LOADED]------------------------------------------------------------
     public initApp() {
 
@@ -347,7 +354,10 @@ export default class Autoconfig {
             dropArea.addEventListener("dragleave", this.handleFileDragLeave);
 
             //onclick button reset : resetApp()
-            document.querySelector(".overview_result .tab_head_options .uil-refresh").addEventListener('click', this.resetApp);
+            document.querySelector("div.overview_result div.buttons button.reset").addEventListener('click', this.resetApp);
+            
+            //onclick button refresh results (usefull if an error occured on browser while generating previous config)
+            document.querySelector(".overview_result .tab_head_options .uil-refresh").addEventListener('click', this.refreshAppp);
 
             //Copy the result when the button is clicked: Save the result to the clipboard
             document.querySelector(".overview_result .tab_head_options .uil-copy").addEventListener('click', this.saveResultToClipboard);
