@@ -100,13 +100,26 @@ export default class Autoconfig {
         //build config
     }
 
-    public async updateStatesFromSpecInput(specInput: HTMLInputElement, isToUnpack: boolean, isReplacingOld:boolean) {
+    public updateStatesFromSpecInput(specInput: HTMLInputElement, isToUnpack: boolean, isReplacingOld:boolean) {
         var autoconfig = new Autoconfig();
         autoconfig.updateFileStructurFromSpecInput(specInput, isToUnpack);
-        await autoconfig.buildConfig(specInput.files, isToUnpack, isReplacingOld);
+        if(isToUnpack){
+            if (specInput.files[0].name.endsWith('.zip')) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const data = event.target.result;
+                    JSZip.loadAsync(data).then( (zipData) => {
+                        autoconfig.buildConfig(zipData, isToUnpack, isReplacingOld);
+                    });
+                };
+                reader.readAsArrayBuffer(specInput.files[0]);
+            }
+        } else {
+            autoconfig.buildConfig(specInput.files, isToUnpack, isReplacingOld);
+        }
     }
 
-    // TODO Function to unzip archive
+    // Function to unzip archive
     public unpackArchive(file: File) {
         var folderStructure = document.getElementById('filehierarchy_tree');
         var autoconfig = new Autoconfig();
@@ -194,8 +207,6 @@ export default class Autoconfig {
             //unzip and add files and folders
             autoconfig.unpackArchive(specInput.files[0]);
         } else {
-            //TODO check if folder or file
-            //TODO check daughters
             //Add files on file-structure without unpack
             for (let i = 0; i < specInput.files.length; i++) {
                 const listItem = document.createElement("li");
@@ -207,10 +218,7 @@ export default class Autoconfig {
                 listItem.setAttribute("noDelete", "false");
                 listItem.setAttribute("noRename", "false");
                 listItem.setAttribute("noChildren", "true");
-                //listItemAnchor.innerText = specInput.files[i].webkitRelativePath || specInput.files[i].name;
                 listItemAnchor.innerText = specInput.files[i].name;
-                //let file = specInput.files[i];
-                //listItemAnchor.innerText += "  | " + file.webkitRelativePath;
                 listItem.appendChild(listItemAnchor);
                 fileTreeTop.appendChild(listItem);
             }
@@ -222,12 +230,13 @@ export default class Autoconfig {
         treeObj.initTree();
     }
 
-    // TODO Function to generate the configuration
-    public async buildConfig(files: FileList, isToUnpack: boolean = false, isReplacingOld:boolean=true) {
+    // Function to generate the configuration
+    public async buildConfig(files: FileList, isToUnpack: boolean, isReplacingOld:boolean=true) {
+        var autoconfig = new Autoconfig();
         //1- Build Feedbacks Block (always from all input fields)
         //2- Also show syntactic errors in keywords parameters
         //3- Build file structure > correct files parents
-        await new MASS_CheckerCoverage().buildConfigFromJavaFile(files, isReplacingOld);
+        new MASS_CheckerCoverage().buildConfigFromJavaFiles(files, isToUnpack, isReplacingOld).then(autoconfig.updateResultWeight);
     }
 
     // TODO function which build config from all uploaded files
@@ -258,12 +267,11 @@ export default class Autoconfig {
             });
             return;
         }
-        await autoconfig.updateStatesFromSpecInput(currentInputFile, false, isReplacingOld);
-
+        autoconfig.updateStatesFromSpecInput(currentInputFile, false, isReplacingOld);
     }
 
 
-    // TODO Function to handle file drop event
+    // Function to handle file drop event
     public handleFileDrop(event: DragEvent) {
         event.preventDefault();
         var autoconfig = new Autoconfig();
@@ -276,12 +284,7 @@ export default class Autoconfig {
         // Get the files from the event
         const files: FileList = event.dataTransfer.files;
         currentInputFile.files = files;
-        autoconfig.startFirstStepUpload(currentInputFile, true);
-        /*
-        if (event.dataTransfer.types[i] == "Files") {
-            return true;
-        }
-        */
+        autoconfig.startFirstStepUpload(currentInputFile, true).then( autoconfig.updateResultWeight );
     }
 
     // Function to handle file dragover event
@@ -355,9 +358,7 @@ export default class Autoconfig {
             //onchange principal input file
             const inputFile0 = document.getElementById("projectFile") as HTMLInputElement;
             inputFile0.addEventListener("change", () => {
-                this.startFirstStepUpload(inputFile0, true).then(
-                    () => this.updateResultWeight()
-                );
+                this.startFirstStepUpload(inputFile0, true);
             });
 
             //onchange "Level"
@@ -370,7 +371,7 @@ export default class Autoconfig {
 
             //onchange "Show Test Failures"
             const selectTestFailures = document.getElementById("test_failures") as HTMLInputElement;
-            selectTestFailures.addEventListener("change", () => {
+            selectTestFailures.addEventListener("change", () => {
                 new MASS_CheckerCoverage().updateResult_testFailures(selectTestFailures.checked);
                 this.updateResultWeight();
             });
