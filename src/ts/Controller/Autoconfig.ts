@@ -68,6 +68,28 @@ export default class Autoconfig {
     }
 
 
+    public downloadConfig(){
+        try {
+            
+            let textareaResult = document.querySelector("textarea.boxContainer") as HTMLTextAreaElement;
+
+            // Create a Blob object from the textarea value
+            const blob = new Blob([textareaResult.value], { type: "application/json" });
+
+            // Generate a download link for the file
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "massConfig.json";
+
+            // Trigger the download
+            link.click();
+
+        } catch (error) {
+            console.error(`Download failed : ${error}`);
+        }
+    }
+
+
     //-[AUTOCONFIGURATOR]------------------------------------------------------------
     public resetAutoConfigurator() {
         //reset values of fields of type input file
@@ -364,6 +386,10 @@ export default class Autoconfig {
 
             //Copy the result when the button is clicked: Save the result to the clipboard
             document.querySelector(".overview_result .tab_head_options .uil-file-edit").addEventListener('click', this.addResultFromClipboard);
+
+            //Generate json-file of the result then download it
+            document.querySelector("#downloadConfig").addEventListener('click', this.downloadConfig);
+
 
             //onchange principal input file
             const inputFile0 = document.getElementById("projectFile") as HTMLInputElement;
