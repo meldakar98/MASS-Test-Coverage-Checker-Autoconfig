@@ -267,11 +267,16 @@ export default class Autoconfig {
 
     }
 
+
     //Function of the first step to build the configuration after an upload
     public async startFirstStepUpload(currentInputFile: HTMLInputElement, isReplacingOld:boolean) {
         var autoconfig = new Autoconfig();
         const files: FileList = currentInputFile.files;
 
+        if(isReplacingOld){
+            //reset config result
+            autoconfig.resetResult();
+        }
         if (files.length == 1 && files[0].name.endsWith('.zip')) {
             var notifier = new Notifier();
             let prepNotif: string = '<h3> Archive Upload </h3> ' +
@@ -365,6 +370,44 @@ export default class Autoconfig {
                 "<li><em> File weight: " + calculateTxtFileWeight(textareaResult.value, 2) + " Ko </em></li>";
         }
     }
+
+
+    //Function to reset config result
+    public resetResult(isConservingConfig:boolean=true) {
+        var autoconfig = new Autoconfig();
+
+        //free file structure
+        autoconfig.resetProjectStructur();
+        
+        //reset class variables
+        this.subfolder = [];
+        this.DEFAULT_RESULT = new MASSHandler().getDefault_massFullConfig();
+    
+        //free config result
+        autoconfig.initConfigResult();
+
+        if(isConservingConfig){
+            //update config result corresponding to manual parameters
+            //update syntax
+            let selectLevel = document.getElementById("syntaxLevel") as HTMLInputElement;
+            let syntaxLevel: Level = selectLevel.value == "ADVANCED" ? Level.ADVANCED : Level.BEGINNER;
+            new MASS_Syntax(syntaxLevel).updateResult();
+
+            let mass_CheckerCoverage = new MASS_CheckerCoverage();
+
+            //update "Show Test Failures"
+            let selectTestFailures = document.getElementById("test_failures") as HTMLInputElement;
+            new mass_CheckerCoverage.updateResult_testFailures(selectTestFailures.checked);
+            
+            //update "Show Full Coverage Report"
+            let selectFullCovReport = document.getElementById("test_full_report") as HTMLInputElement;
+            new mass_CheckerCoverage.updateResult_testFullReport(selectFullCovReport.checked);
+        }else{
+            autoconfig.resetAutoConfigurator();
+        }
+        autoconfig.updateResultWeight();
+    }
+
 
     public resetApp() {
         var autoconfig = new Autoconfig();
