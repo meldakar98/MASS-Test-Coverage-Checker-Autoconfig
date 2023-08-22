@@ -84,14 +84,13 @@ export function downloadZipFile(url: string, inputFieldId: string): Promise<void
               // Set the onload event handler to put the file contents in the input field
               reader.onload = () => {
                   const fileContents = reader.result;
-                  console.log(fileContents);
                   const inputFile = document.getElementById(inputFieldId) as HTMLInputElement;
                   const fileValue = new File([fileContents], "downloaded.zip");
 
                   // Create a DataTransfer to get a FileList
                   const dataTransfer = new DataTransfer();
                   dataTransfer.items.add(fileValue);
-
+                  
                   //Add files in principal file's input-field
                   inputFile.files = dataTransfer.files;
                   resolve();

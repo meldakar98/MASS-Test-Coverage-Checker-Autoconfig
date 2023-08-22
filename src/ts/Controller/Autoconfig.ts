@@ -6,6 +6,7 @@ import MASS_Syntax from "../Model/MASS_Syntax.js";
 import {Level} from "../Model/DataStructurs/Level.js";
 import {calculateTxtFileWeight} from "./Helper.js";
 import {getParsedDate} from "./Helper.js";
+import {downloadZipFile} from "./Helper.js";
 
 interface AssociativeArray {
     [key: string]: string
@@ -70,7 +71,7 @@ export default class Autoconfig {
 
     public downloadConfig(){
         try {
-            
+
             let textareaResult = document.querySelector("textarea.boxContainer") as HTMLTextAreaElement;
 
             // Create a Blob object from the textarea value
@@ -277,11 +278,13 @@ export default class Autoconfig {
                 '<p> Does the archive file need to be unzipped before adding to the project? </p> <br/> ' +
                 '<p> <button id="btnUnzipUploading">yes</button> <button id="btnKeepUploading">no</button> </p> ';
             notifier.notif(prepNotif);
+
             const btnUnzip = document.getElementById("btnUnzipUploading");
             btnUnzip.addEventListener("click", () => {
                 autoconfig.updateStatesFromSpecInput(currentInputFile, true, isReplacingOld);
                 notifier.removeNotif(true);
             });
+
             const btnOnlyUpload = document.getElementById("btnKeepUploading");
             btnOnlyUpload.addEventListener("click", () => {
                 autoconfig.updateStatesFromSpecInput(currentInputFile, false, isReplacingOld);
@@ -292,6 +295,24 @@ export default class Autoconfig {
         autoconfig.updateStatesFromSpecInput(currentInputFile, false, isReplacingOld);
     }
 
+
+    //Function to handle autoconfig from external url of a zip-file
+    public configFromUrl(){
+        const inputSearchUrl = document.getElementById("searchUrlZip") as HTMLInputElement;
+        if(inputSearchUrl.value == ""){
+            inputSearchUrl.focus();
+            return;
+        }
+        const inputFieldId = "projectFile";
+        const inputField = document.getElementById(inputFieldId) as HTMLInputElement;
+        downloadZipFile(inputSearchUrl.value, inputFieldId)
+            .then(() => {
+                new Autoconfig().startFirstStepUpload( inputField, true);
+            })
+            .catch(error => {
+                new Notifier().notif(`<h3> ERROR </h3> <p> ${error} </p> <br/>`);
+            });
+    }
 
     // Function to handle file drop event
     public handleFileDrop(event: DragEvent) {
@@ -390,7 +411,6 @@ export default class Autoconfig {
             //Generate json-file of the result then download it
             document.querySelector("#downloadConfig").addEventListener('click', this.downloadConfig);
 
-
             //onchange principal input file
             const inputFile0 = document.getElementById("projectFile") as HTMLInputElement;
             inputFile0.addEventListener("change", () => {
@@ -417,6 +437,21 @@ export default class Autoconfig {
             selectFullCovReport.addEventListener("change", () => {
                 new MASS_CheckerCoverage().updateResult_testFullReport(selectFullCovReport.checked);
                 this.updateResultWeight();
+            });
+
+            //Onclick button to search zip using external url
+            document.querySelector(".overview_form .uil-search-plus").addEventListener('click', this.configFromUrl);
+            
+            // Execute a function when the user presses a key on the keyboard
+            const inputSearchUrl = document.getElementById("searchUrlZip");
+            inputSearchUrl.addEventListener("keypress", function(event) {
+                // If the user presses the "Enter" key on the keyboard
+                if (event.key === "Enter") {
+                // Cancel the default action, if needed
+                event.preventDefault();
+                // Trigger the button element with a click
+                new Autoconfig().configFromUrl();
+                }
             });
 
             //TODO: onpaste config: change all.

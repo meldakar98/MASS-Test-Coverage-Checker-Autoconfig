@@ -85,9 +85,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="boxContainer none">
-                                <ul id="filehierarchy_tree" class="filehierarchy_tree">
-                                </ul>
+                            <div class="">
+                                <input type="url" id="searchUrlZip" placeholder="url"/>
+                                <i class="uil uil-search-plus"></i>
                             </div>
                             <label for="projectFile">
                                 <div class="boxUpload">
@@ -99,6 +99,10 @@
                                     <ul id="file-list"></ul>
                                 </div>
                             </label>
+                            <div class="boxContainer none">
+                                <ul id="filehierarchy_tree" class="filehierarchy_tree">
+                                </ul>
+                            </div>
                             <div class="boxInfos">
                                 <p class="allowed uil uil-check-circle none">
                                     Upload succeed
@@ -146,16 +150,15 @@
                                 <div class="table_cell tab_head_options">  
                                     <i class="uil uil-copy" title="copy data to clipboard"></i>
                                     <i class="uil uil-file-edit" title="paste data from clipboard"></i>
-                                    <i class="uil uil-refresh" title="reset data"></i>
+                                    <i class="uil uil-refresh" title="refresh data"></i>
                                 </div>
                             </div>
                             <textarea class="boxContainer" readonly>You need to enable JavaScript to run this app...</textarea>
                             <div class="boxInfos">
                                 <fieldset>
                                     <legend>Generated json file</legend>
-                                    <ul>
+                                    <ul id="resultWeight">
                                         <li><em> Default Configuration</em></li>
-                                        <!-- <li><em> File weight: ... </em></li> -->
                                     </ul>
                                 </fieldset>
                                 <div class="buttons">
