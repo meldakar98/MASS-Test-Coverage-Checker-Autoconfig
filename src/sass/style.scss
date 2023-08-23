@@ -43,7 +43,7 @@ div.overview_form {
   margin: 2em 1%;
   width: 60%;
   div.box {
-    margin: 2em 0;
+    margin: 1em 0;
     div.inputSearch{
       input {
         width:92%;
@@ -74,11 +74,11 @@ div.overview_form {
 
 div.overview_result {
   float: left;
-  margin: 4em 0 0 0;
+  margin: 2.7em 0 0 0;
   padding: 0;
   width: 35%;
   height: 76vh;
-  min-height: 380px;
+  min-height: 500px;
   div.box {
     height: 100%;
   }
@@ -143,6 +143,9 @@ div.box {
     i {
       font-size: x-large;
     }
+    p, p b {
+      color: var(--color-light-gray);
+    }
   }
   div.boxInfos {
     padding: 5px;
@@ -155,7 +158,7 @@ div.box {
       padding: 5px;
       width: 100%;
       background-color: transparent;
-      color: #8a97a0;
+      color: var(--text-color);
     }
     button {
       padding: 5px;
@@ -164,10 +167,11 @@ div.box {
       cursor: pointer;
       color: white;
       background-color: orange;
+      border-radius: var(--box-border-radius);
       &.reset {
         border: 1px solid orange;
         color: orange;
-        background-color: white;
+        background-color: var(--panel-color);
       }
     }
   }
@@ -332,10 +336,8 @@ nav.close ~ .dashboard {
   justify-content: space-between;
   align-items: center;
   padding: 15px 15px 25px 15px;
-  background-color: var(--panel-color);
   transition: var(--tran-05);
   z-index: 10;
-
   background-color: var(--head-color);
   color: white;
   i {
@@ -344,6 +346,7 @@ nav.close ~ .dashboard {
   h5,
   h1 {
     font-weight: lighter;
+    color: white;
   }
 }
 

@@ -5,6 +5,7 @@
   --box-border-radius: 5px;
   --box-padding: 10px;
   --box-margin: 10px;
+  --box-shadow: 10px;
 
   /* ===== Font ===== */
   --bs-font-sans-serif: Open Sans;
@@ -31,7 +32,7 @@
   --primary-color: rgb(156, 39, 176);
   --head-color: #465362;
   --panel-color: #fff;
-  --text-color: #000;
+  --text-color: #111;
   --black-light-color: #707070;
   --border-color: #e6e5e5;
   --toggle-color: #ddd;
@@ -66,6 +67,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  color: var(--text-color);
   &:before,
   &:after {
     box-sizing: border-box;
@@ -80,7 +82,7 @@
     width: 8px;
   }
   &::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: var(--panel-color);
   }
   &::-webkit-scrollbar-thumb {
     background-color: var(--scrollbar-thumb);
@@ -125,11 +127,14 @@ body {
     --primary-color: #3a3b3c;
     --second-color: #3a3b3c;
     --panel-color: #242526;
-    --text-color: #ccc;
+    --text-color: #cccccccc;
     --black-light-color: #ccc;
     --border-color: #4d4c4c;
     --toggle-color: #fff;
     --title-icon-color: #ccc;
+    --color-box-result: #111; 
+    --color-light-gray-2: rgb(100, 100, 100);
+    --box-shadow: 5px;
     &::-webkit-scrollbar-thumb:hover,
     .activity-data::-webkit-scrollbar-thumb:hover {
       background: #3a3b3c;
@@ -165,9 +170,13 @@ i {
   color: var(--black-light-color);
 }
 
+input{
+  background-color: var(--panel-color);
+}
+
 .box {
   border-radius: var(--box-border-radius);
-  box-shadow: 1px 1px 10px var(--color-light-gray-3);
+  box-shadow: 1px 1px var(--box-shadow) var(--color-light-gray-3);
   margin: 1em 0;
 }
 
@@ -260,7 +269,7 @@ div#notif_box {
   width: 50%;
   min-width: 200px;
   max-width: 900px;
-  padding: 20px;
+  padding: 2em 20px 20px 20px;
   height: auto;
   min-height: 200px;
   max-height: calc(90% - 25% - 20px);
@@ -268,10 +277,37 @@ div#notif_box {
   border-radius: 5px;
   box-shadow: 1px 1px 5px var(--color-dark-gray);
   text-align: center;
+  h1,h2,h3,h4{
+    margin-bottom: 1em;
+  }
   p {
     width: 100%;
     text-align: center;
     margin: 0 auto;
+  }
+  button{
+    color: #ffF;
+    padding: var(--box-padding);
+    margin: 0.5em 0;
+    background-color: var(--second-color);
+    border: 1px solid var(--second-color);
+    border-radius: var(--box-border-radius);
+    cursor: pointer;
+  }
+  button#btnClose_notif_box{
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      position: absolute;
+      top: 0.25em;
+      right: 0.5em;
+      border-radius: 10px;
+      font-size: 16px;
+      line-height: 14px;
+      background-color: var(--color-light-gray);
+      border: 1px solid var(--color-light-gray);
+      border-radius: 50%;
+
   }
 }
 
