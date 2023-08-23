@@ -99,6 +99,47 @@ export function isEqualJSON(obj1: any, obj2: any): boolean {
 }
 
 
+/**
+ * Verify that a string that is cast to a JSON object has at least the same keys and value types as a default given string that is cast to a JSON object
+ * 
+ * @param configTxt The string to cast to json object, which keys and value's types will be compared with those of @param defaultTxt
+ * @param defaultTxt The default string to transform in json object for comparison
+ * @returns Returns boolean true if the @param configTxt transformed to json have all the keys present in @param defaultTxt
+ */
+export function isCorrectJsonSkeleton(configTxt: string, defaultTxt: string): boolean{
+  let jsonParsedConfig = JSON.parse(configTxt);
+  let jsonDefault = JSON.parse( defaultTxt );
+
+  // Check if both the object to check have the same number of keys or more than the default
+  const keysParsedConfig = Object.keys(jsonParsedConfig);
+  const keysDefault = Object.keys(jsonDefault);
+  if (keysParsedConfig.length < keysDefault.length) {
+      return false;
+  }
+
+  // Recursively compare each key-value pair in the objects
+  for (let key of keysDefault) {
+      // Check if the key exists in both objects
+      if (!(keysParsedConfig.includes(key))) {
+          return false;
+      }
+
+      // Check if the values are the same type
+      const value1 = jsonParsedConfig[key];
+      const value2 = jsonDefault[key];
+      if (typeof value1 === "object" && typeof value2 === "object") {
+          // Recursively compare nested objects
+          if (!isCorrectJsonSkeleton(JSON.stringify(value1), JSON.stringify(value2))) {
+              return false;
+          }
+      } else if (typeof value1 !== typeof value2) {
+          return false;
+      }
+  }
+  return true;
+}
+
+
 
 /**
  * Download a zip file from a given URL and put it in an input file field.
