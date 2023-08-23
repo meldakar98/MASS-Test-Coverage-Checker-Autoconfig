@@ -1,4 +1,4 @@
-import Style from "./View/scripts/style.js";
+import Style from "./View/scripts/Style.js";
 import Autoconfig from "./Controller/Autoconfig.js";
 
 new Style().initApplication();

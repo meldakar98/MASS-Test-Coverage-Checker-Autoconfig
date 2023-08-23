@@ -45,18 +45,17 @@ export default class Style {
 
   public initApplication(): void 
   {
-    const body = document.querySelector<HTMLElement>("body");
-    const sidebar = document.querySelector<HTMLElement>("nav");
-    const modeToggle = document.querySelector<HTMLElement>(".mode-toggle");
-    const sidebarToggle = document.querySelector<HTMLElement>(".sidebar-toggle");
+    window.addEventListener("DOMContentLoaded", (event) => {
+      const body = document.querySelector<HTMLElement>("body");
+      const sidebar = document.querySelector<HTMLElement>("nav");
+      const modeToggle = document.querySelector<HTMLElement>(".mode-toggle");
+      const sidebarToggle = document.querySelector<HTMLElement>(".sidebar-toggle");
 
-    if(body==null || sidebar==null || modeToggle==null || sidebarToggle==null) throw new Error('DOM Element missing');
+      if(body==null || sidebar==null || modeToggle==null || sidebarToggle==null) throw new Error('DOM Element missing');
 
-    this.addNavListeners(body, sidebar, sidebarToggle, modeToggle);
-
-
-  document.addEventListener('DOMContentLoaded', this.initApplication);
-  window.addEventListener('scroll', (event) => {this.handleScroll(event)}, true);
+      this.addNavListeners(body, sidebar, sidebarToggle, modeToggle);
+    });
+    window.addEventListener('scroll', (event) => {this.handleScroll(event)}, true);
   }
 
 }
