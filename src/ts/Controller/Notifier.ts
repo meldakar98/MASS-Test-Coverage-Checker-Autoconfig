@@ -68,7 +68,7 @@ export default class Notifier {
         if (toCover) this.setCover();
         this.createNotifBox();
         var notifBox : HTMLElement = document.getElementById("notif_box");
-        notifBox.innerHTML = htmlCode + "<br><center> <button id='btnClose_notif_box'> close </button> </center>";
+        notifBox.innerHTML = htmlCode + "<br><button id='btnClose_notif_box'> &times; </button>";
         this.fadeIn(notifBox, "block");
         document.getElementById("btnClose_notif_box").addEventListener("click", ()=>this.removeNotif(toCover));
         setTimeout(()=>this.removeNotif(toCover), exp);
