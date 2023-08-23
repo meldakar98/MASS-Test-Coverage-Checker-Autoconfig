@@ -4,6 +4,8 @@ import MASS_CheckerSemantic from "../Model/MASS_CheckerSemantic.js";
 import MASS_CheckerCoverage from "./MASS_CheckerCoverage.js";
 import MASS_CheckerClass from "../Model/MASS_CheckerClass.js";
 import MASS_CheckerMetric from "../Model/MASS_CheckerMetric.js";
+import {isCorrectJsonSkeleton} from "./Helper.js";
+
 
 export default class MASSHandler{
 
@@ -42,6 +44,10 @@ export default class MASSHandler{
 
     public getDefault_massSelected(): string{
         return '\n  "styleSelected": '+this.styleSelected.toString()+',\n  "semanticSelected": '+this.semanticSelected.toString()+',\n  "coverageSelected": '+this.coverageSelected.toString()+',\n  "classSelected": '+this.classSelected.toString()+',\n  "metricsSelected": '+this.metricsSelected.toString()+',';
+    }
+
+    public isCorrectConfigSkeleton(configTxt: string): boolean{
+        return isCorrectJsonSkeleton(configTxt, this.getDefault_massFullConfig());
     }
 
 } 
