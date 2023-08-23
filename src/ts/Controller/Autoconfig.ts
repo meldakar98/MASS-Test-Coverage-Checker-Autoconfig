@@ -34,9 +34,9 @@ export default class Autoconfig {
         navigator.clipboard.writeText("qf.mass = " + resultContainer.value)
             .then(() => {
                 if (resultContainer.value == this.DEFAULT_RESULT) {
-                    new Notifier().notif("The default configuration was copied to the clipboard without modification.");
+                    new Notifier().notif("<h2>Configurations Copy</h2> <p>The default configuration was copied to the clipboard without modification.</p>");
                 } else {
-                    new Notifier().notif("The generated Configuration was copied to clipboard.");
+                    new Notifier().notif("<h2>Configurations Copy</h2> <p>The generated Configuration was copied to clipboard.</p>");
                 }
             })
             .catch((error) => {
@@ -156,7 +156,7 @@ export default class Autoconfig {
             };
             reader.readAsArrayBuffer(file);
         } else {
-            new Notifier().notif('Please select a Zip file.');
+            new Notifier().notif('<h2>File Upload</h2> <p>Please select a Zip file.</p>');
         }
     }
 
@@ -415,7 +415,7 @@ export default class Autoconfig {
         autoconfig.resetAutoConfigurator();
         autoconfig.initConfigResult();
         autoconfig.updateResultWeight();
-        new Notifier().notif("The Configurator have been reseted");
+        new Notifier().notif("<h2>Reset Configurator</h2> <p>The Configurator have been reseted </p>");
     }
 
 
@@ -423,7 +423,7 @@ export default class Autoconfig {
         var autoconfig = new Autoconfig();
         autoconfig.updateAllFileStructur();
         autoconfig.buildConfigWholeConfig();
-        new Notifier().notif("The results are now up to date");
+        new Notifier().notif("<h2>Update Results</h2> <p>The results are now up to date </p>");
     }
 
     //-[DOM LOADED]------------------------------------------------------------
