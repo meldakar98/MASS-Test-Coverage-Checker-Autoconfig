@@ -54,6 +54,51 @@ export function calculateTxtFileWeight(text: string, round): number {
 }
 
 
+/**
+ * Function to compare two JSON objects and checks if they are equal.
+ * The logic is based on recursively comparing each key-value pair in the objects.
+ * 
+ * @param obj1 The first JSON object.
+ * @param obj2 The second JSON object.
+ * @returns Returns true if the objects are equal, false otherwise.
+ */
+export function isEqualJSON(obj1: any, obj2: any): boolean {
+  // Check if both objects are of type object
+  if (typeof obj1 !== "object" || typeof obj2 !== "object") {
+      return false;
+  }
+
+  // Check if both objects have the same number of keys
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+  if (keys1.length !== keys2.length) {
+      return false;
+  }
+
+  // Recursively compare each key-value pair in the objects
+  for (let key of keys1) {
+      // Check if the key exists in both objects
+      if (!obj2.hasOwnProperty(key)) {
+          return false;
+      }
+
+      // Check if the values are equal
+      const value1 = obj1[key];
+      const value2 = obj2[key];
+      if (typeof value1 === "object" && typeof value2 === "object") {
+          // Recursively compare nested objects
+          if (!isEqualJSON(value1, value2)) {
+              return false;
+          }
+      } else if (value1 !== value2) {
+          return false;
+      }
+  }
+
+  return true;
+}
+
+
 
 /**
  * Download a zip file from a given URL and put it in an input file field.
