@@ -7,6 +7,7 @@ import {Level} from "../Model/DataStructurs/Level.js";
 import {calculateTxtFileWeight} from "./Helper.js";
 import {getParsedDate} from "./Helper.js";
 import {downloadZipFile} from "./Helper.js";
+import {isEqualJSON} from "./Helper.js";
 
 interface AssociativeArray {
     [key: string]: string
@@ -50,20 +51,48 @@ export default class Autoconfig {
         navigator.clipboard.readText()
             .then((text) => {
                 const CONFIG_OBJECT_NAME = "qf.mass";
-                let parsedConfig = text.substring(text.indexOf(CONFIG_OBJECT_NAME) + CONFIG_OBJECT_NAME.length); 
-                parsedConfig = parsedConfig.substring(parsedConfig.indexOf("=")+1);
-                parsedConfig = parsedConfig.trim();
-                if (parsedConfig == this.DEFAULT_RESULT) {
-                    new Notifier().notif("The pasted configuration is the default configuration");
+                let massHandler = new MASSHandler();
+
+                //remove space at the start and end of text for the extraction of configuration
+                let parsedConfig = text.trim();
+
+                //remove the object name qf.mass from the string for config's extraction
+                if(parsedConfig.startsWith(CONFIG_OBJECT_NAME)){
+                    parsedConfig = text.substring(text.indexOf(CONFIG_OBJECT_NAME) + CONFIG_OBJECT_NAME.length); 
+                    parsedConfig = parsedConfig.substring(parsedConfig.indexOf("=")+1);
+                    parsedConfig = parsedConfig.trim();
+                }
+
+                //cast extraction's string and default string to json
+                let jsonParsedConfig = JSON.parse(parsedConfig);
+                let jsonDefault = JSON.parse( massHandler.getDefault_massFullConfig() );
+
+                //check if pasting element have a correct config form
+                if( massHandler.isCorrectConfigSkeleton(parsedConfig) ){
+                    if (isEqualJSON(jsonParsedConfig,jsonDefault)) {
+                        new Notifier().notif("<h2>Configurations Paste</h2> <p>The pasted configuration is the default configuration</p>");
+                    } else {
+                        // extract current coverage config string
+                        let currentConfig = (document.querySelector("textarea.boxContainer") as HTMLTextAreaElement).value;
+                        let jsonCurrentConfig = JSON.parse(currentConfig);
+
+                        //add extracted coverage checker's value in the one in parsedConfig
+                        jsonParsedConfig["syntax"] = jsonCurrentConfig["syntax"];
+                        jsonParsedConfig["coverage"] = jsonCurrentConfig["coverage"];
+
+                        //Update the config's result on GUI
+                        resultContainer.value = massHandler.formatConfigResult( JSON.stringify(jsonParsedConfig), 1);
+                    
+                        //Update config's informations
+                        new Autoconfig().updateResultWeight();
+                        new Notifier().notif("<h2>Configurations Paste</h2> <p>The generated Configuration was partially copied from clipboard. </p>");
+                    }
                 } else {
-                    resultContainer.value = parsedConfig;
-                    //TODO fetch filled inpuit files and update the config
-                    this.updateResultWeight();
-                    new Notifier().notif("The generated Configuration was copied to clipboard.");
+                    new Notifier().notif("<h2>Error</h2> <p>The text copied in clipboard is not a valid text for the configurator. </p>");
                 }
             })
             .catch((error) => {
-                console.error(`Could not copy text: ${error}`);
+                new Notifier().notif(`<h2>Error</h2> <p> Could not paste configuration.</p><p> ${error} </p>`);
             });
 
     }
