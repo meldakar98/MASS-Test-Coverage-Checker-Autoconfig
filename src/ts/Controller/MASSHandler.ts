@@ -57,10 +57,10 @@ export default class MASSHandler{
 
     public formatConfigResult(configTxt: string, numberSpaces: number, isSpaceStart:boolean = false): string{
         //default space between key and container rand
-        let space_default = '  ';
+        let space_default = ' ';
 
         //variable space between key and container rand depending on numberSpaces : number of childs in object's value
-        let space = '  ';
+        let space = ' ';
         for(let i=0; i<numberSpaces; i++){
             space += space;
         }
@@ -100,7 +100,15 @@ export default class MASSHandler{
             } 
             // if the value from the key is a string
             else if (typeof currObjValue === "string"){
-                result += '"'+ currObjValue +'"' + commaParam;
+                result += '"'+ currObjValue.split('"').join('\"') +'"' + commaParam;
+            }
+            // if the value from the key is a boolean
+            else if (typeof currObjValue === "boolean"){
+                result += (currObjValue ? 'true' : 'false') + commaParam;
+            }
+            // if the value from the key is a boolean
+            else if (typeof currObjValue === "number"){
+                result += currObjValue + commaParam;
             }
             //anything else : numbers, enums etc...
             else {
