@@ -32,7 +32,7 @@ export default class Autoconfig {
 
     public saveResultToClipboard() {
         const resultContainer: HTMLTextAreaElement = document.querySelector(".overview_result textarea.boxContainer") as HTMLTextAreaElement;
-        navigator.clipboard.writeText("qf.mass = " + resultContainer.value)
+        navigator.clipboard.writeText("qf.mass = " + (resultContainer.value).split("\n").join(""))
             .then(() => {
                 if (resultContainer.value == this.DEFAULT_RESULT) {
                     new Notifier().notif("<h2>Configurations Copy</h2> <p>The default configuration was copied to the clipboard without modification.</p>");
@@ -53,38 +53,40 @@ export default class Autoconfig {
                 const CONFIG_OBJECT_NAME = "qf.mass";
                 let massHandler = new MASSHandler();
 
-                //remove space at the start and end of text for the extraction of configuration
-                let parsedConfig = text.trim();
-
+                //remove special spaces in text for the extraction of configuration
+                let parsedConfig = (text.trim() as string).split("\n").join("");
+                    parsedConfig = (text.trim() as string).split("\t").join("");
+                    parsedConfig = (text.trim() as string).split("\r").join("");
+    
                 //remove the object name qf.mass from the string for config's extraction
                 if(parsedConfig.startsWith(CONFIG_OBJECT_NAME)){
                     parsedConfig = text.substring(text.indexOf(CONFIG_OBJECT_NAME) + CONFIG_OBJECT_NAME.length); 
                     parsedConfig = parsedConfig.substring(parsedConfig.indexOf("=")+1);
                     parsedConfig = parsedConfig.trim();
                 }
-
+                console.log(parsedConfig);
                 //cast extraction's string and default string to json
                 let jsonParsedConfig = JSON.parse(parsedConfig);
                 let jsonDefault = JSON.parse( massHandler.getDefault_massFullConfig() );
 
                 //check if pasting element have a correct config form
                 if( massHandler.isCorrectConfigSkeleton(parsedConfig) ){
-                    if (isEqualJSON(jsonParsedConfig,jsonDefault)) {
-                        new Notifier().notif("<h2>Configurations Paste</h2> <p>The pasted configuration is the default configuration</p>");
-                    } else {
-                        // extract current coverage config string
-                        let currentConfig = (document.querySelector("textarea.boxContainer") as HTMLTextAreaElement).value;
-                        let jsonCurrentConfig = JSON.parse(currentConfig);
+                    // extract current coverage config string
+                    let currentConfig = (document.querySelector("textarea.boxContainer") as HTMLTextAreaElement).value;
+                    let jsonCurrentConfig = JSON.parse(currentConfig);
 
-                        //add extracted coverage checker's value in the one in parsedConfig
-                        jsonParsedConfig["syntax"] = jsonCurrentConfig["syntax"];
-                        jsonParsedConfig["coverage"] = jsonCurrentConfig["coverage"];
+                    //add extracted coverage checker's value in the one in parsedConfig
+                    jsonParsedConfig["syntax"] = jsonCurrentConfig["syntax"];
+                    jsonParsedConfig["coverage"] = jsonCurrentConfig["coverage"];
 
-                        //Update the config's result on GUI
-                        resultContainer.value = massHandler.formatConfigResult( JSON.stringify(jsonParsedConfig), 1);
+                    //Update the config's result on GUI
+                    resultContainer.value = massHandler.formatConfigResult( JSON.stringify(jsonParsedConfig), 1);
                     
-                        //Update config's informations
-                        new Autoconfig().updateResultWeight();
+                    //Update config's informations
+                    new Autoconfig().updateResultWeight();
+                    if (isEqualJSON(jsonParsedConfig,jsonDefault)) {
+                        new Notifier().notif("<h2>Configurations Paste</h2> <p>The pasting configuration is the default configuration</p>");
+                    } else {
                         new Notifier().notif("<h2>Configurations Paste</h2> <p>The generated Configuration was partially copied from clipboard. </p>");
                     }
                 } else {
@@ -525,11 +527,6 @@ export default class Autoconfig {
                 new Autoconfig().configFromUrl();
                 }
             });
-
-            //TODO: onpaste config: change all.
-            //v1. The user should first change the config, then upload files or edit config && the pasted text is not controlled yet
-            //v2. text is controlled and checkers objects and verified are created hanging on the pasted text && the text can everytime be added
-            
 
         });
     }
