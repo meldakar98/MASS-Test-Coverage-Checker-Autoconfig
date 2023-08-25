@@ -60,11 +60,10 @@ export default class Autoconfig {
     
                 //remove the object name qf.mass from the string for config's extraction
                 if(parsedConfig.startsWith(CONFIG_OBJECT_NAME)){
-                    parsedConfig = text.substring(text.indexOf(CONFIG_OBJECT_NAME) + CONFIG_OBJECT_NAME.length); 
-                    parsedConfig = parsedConfig.substring(parsedConfig.indexOf("=")+1);
+                    parsedConfig = text.substring(parsedConfig.indexOf("=")+1);
                     parsedConfig = parsedConfig.trim();
                 }
-                console.log(parsedConfig);
+                
                 //cast extraction's string and default string to json
                 let jsonParsedConfig = JSON.parse(parsedConfig);
                 let jsonDefault = JSON.parse( massHandler.getDefault_massFullConfig() );
@@ -72,11 +71,12 @@ export default class Autoconfig {
                 //check if pasting element have a correct config form
                 if( massHandler.isCorrectConfigSkeleton(parsedConfig) ){
                     // extract current coverage config string
-                    let currentConfig = (document.querySelector("textarea.boxContainer") as HTMLTextAreaElement).value;
+                    let currentConfig = resultContainer.value;
                     let jsonCurrentConfig = JSON.parse(currentConfig);
 
                     //add extracted coverage checker's value in the one in parsedConfig
                     jsonParsedConfig["syntax"] = jsonCurrentConfig["syntax"];
+                    jsonParsedConfig["coverageSelected"] = true;
                     jsonParsedConfig["coverage"] = jsonCurrentConfig["coverage"];
 
                     //Update the config's result on GUI
@@ -204,7 +204,7 @@ export default class Autoconfig {
             let folderName = lastIndexSlash > -1 ? folderPrepared.substring(lastIndexSlash + 1) : folderPrepared as string;
             let folderParent = lastIndexSlash > -1 ? folderPrepared.substring(0, lastIndexSlash + 1) : "" as string;
             if (folderParent != "" && this.subfolder[folderParent] !== undefined) {
-                trueParent = document.getElementById(this.subfolder[folderParent]).getElementsByTagName("ul")[0];
+                trueParent = document.getElementById(this.subfolder[folderParent as string]).getElementsByTagName("ul")[0];
             }
            //fetch folder parent
            //save folder parent in array of folder parents
@@ -218,7 +218,7 @@ export default class Autoconfig {
                 folderElement.appendChild(listItemAnchor);
                 let subFolderElement = document.createElement('ul');
                 folderElement.appendChild(subFolderElement);
-                this.subfolder[relativePath] = folderId;
+                this.subfolder[relativePath as string] = folderId;
                 trueParent.appendChild(folderElement);
             } else { //file
                 const fileElement = document.createElement('li');
