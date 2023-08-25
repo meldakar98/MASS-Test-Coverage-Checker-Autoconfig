@@ -1,3 +1,4 @@
+import MASSHandler from "./MASSHandler.js";
 import { CoverageMiss } from "../Model/DataStructurs/CoverageMiss.js";
 import CheckerCoverageFeedback from "../Model/CheckerCoverageFeedback.js";
 import LineRanges from "../Model/DataStructurs/LineRanges.js";
@@ -85,7 +86,7 @@ export default class MASS_CheckerCoverage {
             }
             //update CheckerCoverageFeedbacks[msgId]
             if (this.feedback.hasOwnProperty(msgId)) {
-              this.feedback[msgId].lineRanges.setEnd(previousInstructionLine);
+              (this.feedback[msgId].lineRanges as any).setEnd(previousInstructionLine);
             }
           }
         } else if (line.includes('/*')) {
@@ -195,40 +196,18 @@ export default class MASS_CheckerCoverage {
 
 
   public updateResult_testFailures(showTestFailures: boolean) {
-    let result: string = '"showTestFailures": ' + showTestFailures.toString();
     let resultContainer = document.querySelector(".overview_result textarea.boxContainer") as HTMLTextAreaElement;
-    let oldResult = resultContainer.value;
-    let oldResultTestFailures = oldResult.substring(oldResult.indexOf('"showTestFailures"'));
-    oldResultTestFailures = oldResultTestFailures.substring(0, oldResultTestFailures.indexOf('}'));
-    if (oldResultTestFailures.indexOf(',') >= 0) {
-      oldResultTestFailures = oldResultTestFailures.substring(0, oldResultTestFailures.indexOf(','));
-    } else {
-      if (oldResultTestFailures.indexOf('true') >= 0) {
-        oldResultTestFailures = oldResultTestFailures.substring(0, oldResultTestFailures.indexOf('true') + 4);
-      } else {
-        oldResultTestFailures = oldResultTestFailures.substring(0, oldResultTestFailures.indexOf('false') + 5);
-      }
-    }
-    resultContainer.value = oldResult.replace(oldResultTestFailures, result);
+    let resultTxt = JSON.parse(resultContainer.value);
+    resultTxt["coverage"]["showTestFailures"] = showTestFailures;
+    resultContainer.value = new MASSHandler().formatConfigResult(JSON.stringify(resultTxt), 1);
   }
 
 
   public updateResult_testFullReport(showFullCoverageReport: boolean) {
-    let result: string = '"showFullCoverageReport": ' + showFullCoverageReport.toString();
     let resultContainer = document.querySelector(".overview_result textarea.boxContainer") as HTMLTextAreaElement;
-    let oldResult = resultContainer.value;
-    let oldResultTestFullReport = oldResult.substring(oldResult.indexOf('"showFullCoverageReport"'));
-    oldResultTestFullReport = oldResultTestFullReport.substring(0, oldResultTestFullReport.indexOf('}'));
-    if (oldResultTestFullReport.indexOf(',') >= 0) {
-      oldResultTestFullReport = oldResultTestFullReport.substring(0, oldResultTestFullReport.indexOf(','));
-    } else {
-      if (oldResultTestFullReport.indexOf('true') >= 0) {
-        oldResultTestFullReport = oldResultTestFullReport.substring(0, oldResultTestFullReport.indexOf('true') + 4);
-      } else {
-        oldResultTestFullReport = oldResultTestFullReport.substring(0, oldResultTestFullReport.indexOf('false') + 5);
-      }
-    }
-    resultContainer.value = oldResult.replace(oldResultTestFullReport, result);
+    let resultTxt = JSON.parse(resultContainer.value);
+    resultTxt["coverage"]["showFullCoverageReport"] = showFullCoverageReport;
+    resultContainer.value = new MASSHandler().formatConfigResult(JSON.stringify(resultTxt), 1);
   }
 
 
@@ -236,30 +215,24 @@ export default class MASS_CheckerCoverage {
     this.showTestFailures = (document.getElementById("test_failures") as HTMLInputElement).checked;
     this.showFullCoverageReport = (document.getElementById("test_full_report") as HTMLInputElement).checked;
     let resultContainer = document.querySelector(".overview_result textarea.boxContainer") as HTMLTextAreaElement;
-    let oldResult = resultContainer.value;
 
-    let oldResultCoverage = oldResult.substring(oldResult.indexOf('"semantic"') + 10);
-    oldResultCoverage = oldResultCoverage.substring(oldResultCoverage.indexOf(':') + 1);
-    oldResultCoverage = oldResultCoverage.substring(oldResultCoverage.indexOf('{') + 1);
-    while (oldResultCoverage.indexOf('}') >= 0) {
-      if ((oldResultCoverage.indexOf('\}') != -1) && (oldResultCoverage.indexOf('}') == oldResultCoverage.indexOf('\}') + 1)) {
-        oldResultCoverage = oldResultCoverage.substring(oldResultCoverage.indexOf('}') + 1);
-      } else
-        break;
-    }
-    oldResultCoverage = oldResultCoverage.substring(oldResultCoverage.indexOf('}') + 1);
-    oldResultCoverage = oldResultCoverage.substring(oldResultCoverage.indexOf(',') + 1);
-    oldResultCoverage = oldResultCoverage.substring(0, oldResultCoverage.indexOf('"classes"'));
+    let resultTxt = JSON.parse(resultContainer.value);
+
+    this.updateResult_testFailures(this.showTestFailures);
+    this.updateResult_testFullReport(this.showFullCoverageReport);
 
     if (isReplacingOld) {
-      // fetch complet result and replace coverage result
-      //find the first "coverage" betwween "semantic": {}, and "classes": {},
-      resultContainer.value = oldResult.substring(0, oldResult.indexOf(oldResultCoverage)) + this.getStringCoverageConfig() + "\n  " + oldResult.substring(oldResult.indexOf(oldResultCoverage) + oldResultCoverage.length);
+      let coverageString = this.getStringCoverageConfig().split("\n").join("");
+      coverageString = coverageString.substring(coverageString.indexOf(":") + 1);
+      coverageString = coverageString.substring(0, coverageString.lastIndexOf(","));
+      coverageString.trim();
+      resultTxt["coverage"] = JSON.parse(coverageString);
     } else {
-      // fetch complet result and append coverage result at the end of current coverage
-      oldResultCoverage = oldResultCoverage.substring(0, oldResultCoverage.lastIndexOf('}'));
-      resultContainer.value = oldResult.substring(0, oldResult.indexOf(oldResultCoverage) + oldResultCoverage.length) + ",\n    " + this.getStringFeedbackConfig() + oldResult.substring(oldResult.indexOf(oldResultCoverage) + oldResultCoverage.length);
+      resultTxt["coverage"]["feedback"].push( JSON.parse(this.getStringFeedbackConfig()) );
     }
+    
+    resultTxt["coverageSelected"] = true;
+    resultContainer.value = new MASSHandler().formatConfigResult(JSON.stringify(resultTxt), 1);
   }
 
 
