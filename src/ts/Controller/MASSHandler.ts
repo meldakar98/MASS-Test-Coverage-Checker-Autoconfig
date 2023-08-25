@@ -100,7 +100,7 @@ export default class MASSHandler{
             } 
             // if the value from the key is a string
             else if (typeof currObjValue === "string"){
-                result += '"'+ currObjValue.split('"').join('\"') +'"' + commaParam;
+                result += '"'+ currObjValue.split('"').join('\'') +'"' + commaParam;
             }
             // if the value from the key is a boolean
             else if (typeof currObjValue === "boolean"){
