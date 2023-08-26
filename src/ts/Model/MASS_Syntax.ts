@@ -1,4 +1,5 @@
 import {Level} from "./DataStructurs/Level.js";
+import MASSHandler from "../Controller/MASSHandler.js";
 
 export default class MASS_Syntax{
     level: Level = Level.BEGINNER;
@@ -20,19 +21,9 @@ export default class MASS_Syntax{
     }
 
     public updateResult(){
-        let result: string = '"syntax": {\n    "level": "'+ Level[this.level] +'"\n  },';
         let resultContainer = document.querySelector(".overview_result textarea.boxContainer") as HTMLTextAreaElement;
-        let oldResult = resultContainer.value;
-        let oldResultSearcher = oldResult.substring(oldResult.indexOf('"syntax"'));
-        while(oldResultSearcher.indexOf('},') >= 0){
-        if((oldResultSearcher.indexOf('\},')!=-1) && (oldResultSearcher.indexOf('},') == oldResultSearcher.indexOf('\},')+1)){
-            oldResultSearcher = oldResultSearcher.substring(oldResultSearcher.indexOf('},')+2);
-        } else
-            break;
-        }
-        oldResultSearcher = oldResultSearcher.substring(oldResultSearcher.indexOf('},')+2);
-
-        let oldResultSyntax =  oldResult.substring(oldResult.indexOf('"syntax"'), oldResult.indexOf(oldResultSearcher));
-        resultContainer.value = oldResult.replace(oldResultSyntax, result);
+        let resultJson = JSON.parse(resultContainer.value);
+        resultJson["syntax"]["level"] = Level[this.level];
+        resultContainer.value = new MASSHandler().formatConfigResult(JSON.stringify(resultJson), 1);
     }
 }
