@@ -5,11 +5,11 @@ export default class CheckerCoverageFeedback{
     public ID: string = "";
     public filename: string = "";
     public showFor: CoverageMiss = CoverageMiss.PARTIALLY_MISSED;
-    public lineRanges: LineRanges | null = null;
+    public lineRanges: [LineRanges] | null = null;
     public messages: string = "";
     public suppresses: string[] = [];
 
-    constructor(ID?:string, filename?:string, showFor?:CoverageMiss, lineRages?:LineRanges|null, messages?:string, suppresses?:string[]){
+    constructor(ID?:string, filename?:string, showFor?:CoverageMiss, lineRages?:[LineRanges]|null, messages?:string, suppresses?:string[]){
         this.ID = ID !== undefined ? ID : "";
         this.filename = filename !== undefined ? filename : "";
         this.showFor = showFor !== undefined ? showFor : CoverageMiss.PARTIALLY_MISSED;
@@ -19,7 +19,12 @@ export default class CheckerCoverageFeedback{
     }
 
     public buildPartFeedbackBlock() : string{
-        let lineRangeKeyValue = this.lineRanges == null ? '"lineRanges": "",\n        ' : '"lineRanges": "'+ this.lineRanges.printLineRange() + '",\n        ';
+        let lineRangeValue = '';
+        for(let i=0; i<this.lineRanges.length; i++){
+            lineRangeValue += this.lineRanges[i].printLineRange();
+            lineRangeValue += i+1 < this.lineRanges.length ? ',' : '';
+        } 
+        let lineRangeKeyValue = this.lineRanges == null ? '"lineRanges": "",\n        ' : '"lineRanges": "'+ lineRangeValue + '",\n        ';
         let supKeyValue = this.suppresses.length == 0 ? "" : '"suppresses": "'+ this.suppresses.join() +'"\n      ';
         let fName =  this.suppresses.length == 0 ? '"fileName": "'+ this.filename +'"\n      ' : '"fileName": "'+ this.filename +'",\n        ';
         return '{\n        ' +
