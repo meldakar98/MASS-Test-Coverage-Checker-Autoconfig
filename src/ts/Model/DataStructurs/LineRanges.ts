@@ -4,7 +4,7 @@ export default class LineRanges {
 
     constructor(start: number, end?:number){
         this.start = start;
-        this.end = this.end ? this.end : null;
+        this.end = end ? ( end > start ? end : null) : null;
     }
 
     public getStart(): number{
@@ -20,7 +20,7 @@ export default class LineRanges {
     }
 
     public setEnd(end: number|null){
-        this.end = end;
+        this.end = end != null ? ( end > this.getStart() ? end : null) : null;
     }
 
     public printLineRange(): string{
