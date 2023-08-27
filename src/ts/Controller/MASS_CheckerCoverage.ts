@@ -56,14 +56,18 @@ export default class MASS_CheckerCoverage {
           if (line.includes(keyWordStartCov)) {
             let feedbackPart: any[] = this.extractFeedbackPart(lines, line, "//", lineNumber, lineNumber);
             // build object for config (check strings formats)
-            this.feedback[feedbackPart[0] as string] = new CheckerCoverageFeedback(
-              feedbackPart[0],
-              file.name,
-              feedbackPart[2],
-              new LineRanges(feedbackPart[4]),
-              feedbackPart[1],
-              feedbackPart[3]
-            );
+            if(this.feedback[feedbackPart[0] as string] !== undefined){
+              this.feedback[feedbackPart[0] as string].lineRanges.push( new LineRanges(feedbackPart[4]) );
+            }else{
+              this.feedback[feedbackPart[0] as string] = new CheckerCoverageFeedback(
+                feedbackPart[0],
+                file.name,
+                feedbackPart[2],
+                [new LineRanges(feedbackPart[4])],
+                feedbackPart[1],
+                feedbackPart[3]
+              );
+            }
           }
           if (line.includes(keyWordEndCov)) {
             //fetch id
@@ -86,7 +90,12 @@ export default class MASS_CheckerCoverage {
             }
             //update CheckerCoverageFeedbacks[msgId]
             if (this.feedback.hasOwnProperty(msgId)) {
-              (this.feedback[msgId].lineRanges as any).setEnd(previousInstructionLine);
+              for(let i=(this.feedback[msgId].lineRanges as any).length-1; i>=0; i--){
+                if( (this.feedback[msgId].lineRanges)[i].getEnd() == null ){
+                  (this.feedback[msgId].lineRanges as any)[i].setEnd(previousInstructionLine);
+                  break;
+                }
+              }
             }
           }
         } else if (line.includes('/*')) {
@@ -107,15 +116,19 @@ export default class MASS_CheckerCoverage {
             // Add the found strings to the array
             if (comment.includes(keyWordStartCov)) {
               let feedbackPart: any[] = this.extractFeedbackPart(lines, comment, "/*", lineNumber, endCommentLineNumber);
-              // build object for config (check strings formats)
-              this.feedback[feedbackPart[0] as string] = new CheckerCoverageFeedback(
-                feedbackPart[0],
-                file.name,
-                feedbackPart[2],
-                new LineRanges(feedbackPart[4]),
-                feedbackPart[1],
-                feedbackPart[3]
-              );
+               // build object for config (check strings formats)
+              if(this.feedback[feedbackPart[0] as string] !== undefined){
+                this.feedback[feedbackPart[0] as string].lineRanges.push( new LineRanges(feedbackPart[4]) );
+              }else{
+                this.feedback[feedbackPart[0] as string] = new CheckerCoverageFeedback(
+                  feedbackPart[0],
+                  file.name,
+                  feedbackPart[2],
+                  [new LineRanges(feedbackPart[4])],
+                  feedbackPart[1],
+                  feedbackPart[3]
+                );
+              }
             }
           }
           if (comment.includes(keyWordEndCov)) {
@@ -139,8 +152,33 @@ export default class MASS_CheckerCoverage {
             }
             //update CheckerCoverageFeedbacks[msgId]
             if (this.feedback.hasOwnProperty(msgId)) {
-              this.feedback[msgId].lineRanges.setEnd(previousInstructionLine);
+              for(let i=(this.feedback[msgId].lineRanges as any).length-1; i>=0; i++){
+                if( (this.feedback[msgId].lineRanges)[i].getEnd() == null ){
+                  (this.feedback[msgId].lineRanges as any)[i].setEnd(previousInstructionLine);
+                  break;
+                }
+              }
             }
+          }
+        }
+      }
+      /* Update line ranges
+       * For each feedback in this.feedback : Delete next lineRange from array of lineRanges
+       * if the end of the current linerange in array of lineranges of current feedback is not null, 
+       * and is bigger than the end of linerange of others next linerange in array of lineranges of current feedback which not null,
+       * or others next lineRange.start is smaller than current linerange.end
+       */
+      for (let fbKey in this.feedback) {
+        let highestRangesEnds = null; 
+        for (let j=0; j<(this.feedback[fbKey].lineRanges as any).length; j++) {
+          let currentRangeEnd = ((this.feedback[fbKey]).lineRanges[j]).getEnd();
+          let currentRangeStart = ((this.feedback[fbKey]).lineRanges[j]).getStart();
+          if(highestRangesEnds!=null){
+            if(currentRangeStart <= highestRangesEnds || (currentRangeEnd != null && currentRangeEnd <= highestRangesEnds)){
+              (this.feedback[fbKey].lineRanges as any).splice(j,1);
+            }
+          }else{
+            highestRangesEnds = currentRangeEnd;
           }
         }
       }
