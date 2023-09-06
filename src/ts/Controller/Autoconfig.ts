@@ -471,11 +471,15 @@ export default class Autoconfig {
             dropArea.addEventListener("dragover", this.handleFileDragOver);
             dropArea.addEventListener("dragleave", this.handleFileDragLeave);
 
-            //TODO Onclick button to add single file
-            //document.querySelector(".overview_form .uil-file-upload").addEventListener('click', this.configFromUrl);
+            //Onclick button to add single file
+            document.querySelector(".overview_form .uil-file-upload").addEventListener('click', ()=>{
+                document.getElementById("projectFile").click();
+            });
 
-            //TODO Onclick button to add single folder
-            //document.querySelector(".overview_form .uil-folder-plus").addEventListener('click', this.configFromUrl);
+            //Onclick button to add single folder
+            document.querySelector(".overview_form .uil-folder-plus").addEventListener('click', ()=>{
+                document.getElementById("othersProjectFile1").click();
+            });
 
             //onclick button reset : resetApp()
             document.querySelector("div.overview_result div.buttons button.reset").addEventListener('click', this.resetApp);
@@ -496,6 +500,12 @@ export default class Autoconfig {
             const inputFile0 = document.getElementById("projectFile") as HTMLInputElement;
             inputFile0.addEventListener("change", () => {
                 this.startFirstStepUpload(inputFile0, true);
+            });
+
+            //onchange folder
+            const inputFileFolder = document.getElementById("othersProjectFile1") as HTMLInputElement;
+            inputFileFolder.addEventListener("change", () => {
+                this.startFirstStepUpload(inputFileFolder, true);
             });
 
             //onchange "Level"
