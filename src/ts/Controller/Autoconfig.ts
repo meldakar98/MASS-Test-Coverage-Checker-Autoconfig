@@ -1,8 +1,9 @@
+//require module JSZIP in  index.html
 import Notifier from "./Notifier.js";
 import JSDragDropTree from "./JSDragDropTree.js";
-import MASS_CheckerCoverage from "./MASS_CheckerCoverage.js";
+import Control_MASS_CheckerCoverage from "./Control_MASS_CheckerCoverage.js";
 import MASSHandler from "./MASSHandler.js";
-import MASS_Syntax from "../Model/MASS_Syntax.js";
+import Control_MASS_Syntax from "./Control_MASS_Syntax.js";
 import {Level} from "../Model/DataStructurs/Level.js";
 import {calculateTxtFileWeight} from "./Helper.js";
 import {getParsedDate} from "./Helper.js";
@@ -290,7 +291,7 @@ export default class Autoconfig {
         //1- Build Feedbacks Block (always from all input fields)
         //2- Also show syntactic errors in keywords parameters
         //3- Build file structure > correct files parents
-        new MASS_CheckerCoverage().buildConfigFromJavaFiles(files, isToUnpack, isReplacingOld).then(autoconfig.updateResultWeight);
+        new Control_MASS_CheckerCoverage().buildConfigFromJavaFiles(files, isToUnpack, isReplacingOld).then(autoconfig.updateResultWeight);
     }
 
     // TODO function which build config from all uploaded files
@@ -422,17 +423,17 @@ export default class Autoconfig {
             //update syntax
             let selectLevel = document.getElementById("syntaxLevel") as HTMLInputElement;
             let syntaxLevel: Level = selectLevel.value == "ADVANCED" ? Level.ADVANCED : Level.BEGINNER;
-            new MASS_Syntax(syntaxLevel).updateResult();
+            new Control_MASS_Syntax(syntaxLevel).updateResult();
 
-            let mass_CheckerCoverage = new MASS_CheckerCoverage();
+            let mass_CheckerCoverage = new Control_MASS_CheckerCoverage();
 
             //update "Show Test Failures"
             let selectTestFailures = document.getElementById("test_failures") as HTMLInputElement;
-            new mass_CheckerCoverage.updateResult_testFailures(selectTestFailures.checked);
+            mass_CheckerCoverage.updateResult_testFailures(selectTestFailures.checked);
             
             //update "Show Full Coverage Report"
             let selectFullCovReport = document.getElementById("test_full_report") as HTMLInputElement;
-            new mass_CheckerCoverage.updateResult_testFullReport(selectFullCovReport.checked);
+            mass_CheckerCoverage.updateResult_testFullReport(selectFullCovReport.checked);
         }else{
             autoconfig.resetAutoConfigurator();
         }
@@ -470,6 +471,12 @@ export default class Autoconfig {
             dropArea.addEventListener("dragover", this.handleFileDragOver);
             dropArea.addEventListener("dragleave", this.handleFileDragLeave);
 
+            //TODO Onclick button to add single file
+            //document.querySelector(".overview_form .uil-file-upload").addEventListener('click', this.configFromUrl);
+
+            //TODO Onclick button to add single folder
+            //document.querySelector(".overview_form .uil-folder-plus").addEventListener('click', this.configFromUrl);
+
             //onclick button reset : resetApp()
             document.querySelector("div.overview_result div.buttons button.reset").addEventListener('click', this.resetApp);
             
@@ -495,21 +502,21 @@ export default class Autoconfig {
             const selectLevel = document.getElementById("syntaxLevel") as HTMLInputElement;
             selectLevel.addEventListener("change", () => {
                 let syntaxLevel: Level = selectLevel.value == "ADVANCED" ? Level.ADVANCED : Level.BEGINNER;
-                 new MASS_Syntax(syntaxLevel).updateResult();
+                 new Control_MASS_Syntax(syntaxLevel).updateResult();
                  this.updateResultWeight();
             });
 
             //onchange "Show Test Failures"
             const selectTestFailures = document.getElementById("test_failures") as HTMLInputElement;
             selectTestFailures.addEventListener("change", () => {
-                new MASS_CheckerCoverage().updateResult_testFailures(selectTestFailures.checked);
+                new Control_MASS_CheckerCoverage().updateResult_testFailures(selectTestFailures.checked);
                 this.updateResultWeight();
             });
 
             //onchange "Show Full Coverage Report"
             const selectFullCovReport = document.getElementById("test_full_report") as HTMLInputElement;
             selectFullCovReport.addEventListener("change", () => {
-                new MASS_CheckerCoverage().updateResult_testFullReport(selectFullCovReport.checked);
+                new Control_MASS_CheckerCoverage().updateResult_testFullReport(selectFullCovReport.checked);
                 this.updateResultWeight();
             });
 
