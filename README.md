@@ -2,16 +2,17 @@
 
 Main features
 ================================
-* Edit the structure of the projects to be evaluated and make the edited project downloadable in zip format.
-* Automatically generate MASS Test Coverage Checker configuration.
-
+* Automatically generate Value of the Test Coverage Checker for the Configuration's object for the MASS-Feedback-Tool from uploaded files.
+* Edit the structure of the projects to be evaluated and generate the Configuration's object from edited Projektstructure.
+* Copy and Download the generated Configuration's object for the MASS-Feedback-Tool.
+* Merge values from another Configuration's object into the generated Object.
 
 <br/>
 
 App usage process
 ==================
 ## Upload project files
-![Screenshot](src/screenshots/Screenshot-ui-startpage-noFile.png "screenshot")
+![Screenshot](src/screenshots/Startseite.png "screenshot")
 
 <br/>
 
@@ -32,16 +33,14 @@ Run the following commands to avoid CORS Error
 <br/>
 
 ## Edit the project Structure 
-![Screenshot](src/screenshots/Screenshot-ui-startpage-foldersUploaded.png "screenshot")
-
-
-<br/>
-
-## Download the new structured project in zip format
-
+![Screenshot](src/screenshots/Verzeichnis_dragDrop_after_renamed.png "screenshot")
 
 <br/>
 
 ## Copy or download JSON configuration
+![Screenshot](src/screenshots/button_copy.png "screenshot")
 
+<br/>
 
+##  Merge values from another Configuration's object
+![Screenshot](src/screenshots/button_paste.png "screenshot")
