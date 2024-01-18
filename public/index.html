@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="shortcut icon" type="image/x-icon"  href="assets/images/favicon.ico" />
+        <link  href="css/style.css" media="screen" rel="stylesheet" type="text/css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>
+        <script type="module" src="js/main.js" defer></script>
+        <title>MASS - Autoconfig | Test Coverage Checker</title>
+    </head>
+    <body>
+        <nav>
+            <div class="logo-name">
+                <div class="logo-image">
+                    <a href="https://qped.eu" target="_blank"> <img src="assets/images/logo_mass.png" class="App-logo" alt=""> </a>
+                </div>
+                <a href="https://qped-eu.github.io/mass/" target="_blank"> <span class="logo_name">MASS</span> </a>
+            </div>
+            <div class="menu-items">
+                <ul class="nav-links">
+                    <li><a href="index.html">
+                        <i class="uil uil-estate"></i>
+                        <span class="link-name">Home</span>
+                    </a></li>
+                    <li><a href="https://qped-eu.github.io/mass/#/configurator" target="_blank">
+                        <i class="uil uil-presentation-check"></i>
+                        <span class="link-name">All Checkers</span>
+                    </a></li>
+                    <li><a href="/html/documentation.html" target="_blank">
+                        <i class="uil uil-book-open"></i>
+                        <span class="link-name">Documentation</span>
+                    </a></li>
+                    <li><a href="/html/policy.html" target="_blank">
+                        <i class="uil uil-shield"></i>
+                        <span class="link-name">Privacy Policy</span>
+                    </a></li>
+                </ul>
+                <ul class="logout-mode">
+                    <li>
+                        <a href="/html/settings.html">
+                        <i class="uil uil-setting"></i>
+                        <span class="link-name">Settings</span>
+                        </a>
+                    </li>
+            
+                    <li class="mode">
+                        <a href="#">
+                            <i class="uil uil-moon"></i>
+                            <span class="link-name">Dark Mode</span>
+                        </a>
+                        <div class="mode-toggle">
+                            <span class="switch"></span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        
+        <section class="dashboard">
+            <div class="top">
+                <i class="uil uil-bars sidebar-toggle"></i>
+                <div class="search-box">
+                    <h1>TEST COVERAGE CHECKER</h1>
+                    <h5>AUTOCONFIG</h5>
+                </div>
+                <img src="" alt="" />
+            </div>
+            <div class="dash-content">
+                <div class="overview">
+                    <div class="overview_form">
+                        <noscript>You need to enable JavaScript to run this app.</noscript>
+                        <div class="box">
+                            <div class="title table">
+                                <div class="table_cell tab_head_title">
+                                    <i class="uil uil-game-structure"></i>
+                                    <span class="text">PROJECT STRUCTUR</span>
+                                </div>
+                                <div class="table_cell tab_head_options">
+                                    <a title="Add a folder in project"> <i class="uil uil-folder-plus"></i> </a>
+                                    <a title="Upload a file in project root"> <i class="uil uil-file-upload"></i> </a>
+                                    <div class="none">
+                                        <input type="file" name="othersProjectFile1"  id="othersProjectFile1" class="othersProjectFile" class="none" webkitdirectory mozdirectory >
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="inputSearch">
+                                <input type="url" id="searchUrlZip" placeholder="Enter URL to download project files"/>
+                                <i class="uil uil-search-plus"></i>
+                            </div>
+                            <label for="projectFile">
+                                <div class="boxUpload">
+                                    <input type="file" name="projectFile"  id="projectFile" class="none" >
+                                    <i class="uil uil-upload"></i>
+                                    <p> <b>Drop a file or a zip-archive here</b> </p>
+                                    <p> Alternatively, you can select a file by</p>
+                                    <p> clicking here</p>
+                                    <ul id="file-list"></ul>
+                                </div>
+                            </label>
+                            <div class="boxContainer none">
+                                <ul id="filehierarchy_tree" class="filehierarchy_tree">
+                                </ul>
+                            </div>
+                            <div class="boxInfos">
+                                <p class="allowed uil uil-check-circle none">
+                                    Upload succeed
+                                </p>
+                                <p class="error uil uil-minus-circle none">
+                                    Upload rejected
+                                </p>
+                            </div>
+                        </div>
+                        <div class="box">
+                            <div class="title table">
+                                <div class="table_cell tab_head_title">
+                                    <i class="uil uil-edit"></i>
+                                    <span class="text">AUTOCONFIGURATOR</span>
+                                </div>
+                            </div>
+                            <div class="boxInfos">
+                                <fieldset>
+                                    <legend>Level</legend>
+                                    <select class="floatLabel" id="syntaxLevel">
+                                        <option value="BEGINNER" selected>BEGINNER</option>
+                                        <option value="ADVANCED">ADVANCED</option>
+                                    </select>
+                                </fieldset>
+                                <fieldset>
+                                    <legend>Feedback Configuration</legend>
+                                    <div>
+                                        <input type="checkbox" id="test_failures" name="test_failures" checked />
+                                        <label for="test_failures">Show Test Failures</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" id="test_full_report" name="test_full_report" />
+                                        <label for="test_full_report">Show Full Coverage Report</label>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overview_result">
+                        <div class="box">
+                            <div class="title table">
+                                <div class="table_cell tab_head_title">
+                                    <span class="text">Generated Configuration</span>
+                                </div>
+                                <div class="table_cell tab_head_options">  
+                                    <i class="uil uil-copy" title="copy data to clipboard"></i>
+                                    <i class="uil uil-file-edit" title="paste data from clipboard"></i>
+                                    <i class="uil uil-refresh" title="refresh data"></i>
+                                </div>
+                            </div>
+                            <textarea class="boxContainer" readonly>You need to enable JavaScript to run this app...</textarea>
+                            <div class="boxInfos">
+                                <fieldset>
+                                    <legend>Generated json file</legend>
+                                    <ul id="resultWeight">
+                                        <li><em> Default Configuration</em></li>
+                                    </ul>
+                                </fieldset>
+                                <div class="buttons">
+                                    <button id="downloadConfig"> download </button>
+                                    <button class="reset"> reset </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer>
+            <p>&copy; MASS</p>
+        </footer>
+    </body>
+</html>

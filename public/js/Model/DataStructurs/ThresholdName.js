@@ -1,0 +1,22 @@
+export var ThresholdName;
+(function (ThresholdName) {
+    ThresholdName["amcThreshold"] = "amcThreshold";
+    ThresholdName["caThreshold"] = "caThreshold";
+    ThresholdName["camThreshold"] = "camThreshold";
+    ThresholdName["cbmThreshold"] = "cbmThreshold";
+    ThresholdName["cboThreshold"] = "cboThreshold";
+    ThresholdName["ccThreshold"] = "ccThreshold";
+    ThresholdName["ceThreshold"] = "ceThreshold";
+    ThresholdName["damThreshold"] = "damThreshold";
+    ThresholdName["ditThreshold"] = "ditThreshold";
+    ThresholdName["icThreshold"] = "icThreshold";
+    ThresholdName["lcomThreshold"] = "lcomThreshold";
+    ThresholdName["lcom3Threshold"] = "lcom3Threshold";
+    ThresholdName["locThreshold"] = "locThreshold";
+    ThresholdName["mfaThreshold"] = "mfaThreshold";
+    ThresholdName["moaThreshold"] = "moaThreshold";
+    ThresholdName["nocThreshold"] = "nocThreshold";
+    ThresholdName["npmThreshold"] = "npmThreshold";
+    ThresholdName["rfcThreshold"] = "rfcThreshold";
+    ThresholdName["wmcThreshold"] = "wmcThreshold";
+})(ThresholdName || (ThresholdName = {}));
